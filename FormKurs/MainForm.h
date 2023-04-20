@@ -1,4 +1,8 @@
 #pragma once
+#include "NewChannel.h"
+#include "ReadChannel.h"
+#include "WriteChannel.h"
+#include <string>
 
 namespace FormKurs {
 
@@ -41,7 +45,8 @@ namespace FormKurs {
 	private: System::Windows::Forms::Label^ label_open_read;
 	private: System::Windows::Forms::Label^ label_new_write;
 	private: System::Windows::Forms::Button^ button_read_channel;
-	private: System::Windows::Forms::Button^ button_write_channe;
+	private: System::Windows::Forms::Button^ button_write_channel;
+		   
 
 	private:
 		/// <summary>
@@ -62,7 +67,7 @@ namespace FormKurs {
 			this->label_open_read = (gcnew System::Windows::Forms::Label());
 			this->label_new_write = (gcnew System::Windows::Forms::Label());
 			this->button_read_channel = (gcnew System::Windows::Forms::Button());
-			this->button_write_channe = (gcnew System::Windows::Forms::Button());
+			this->button_write_channel = (gcnew System::Windows::Forms::Button());
 			this->SuspendLayout();
 			// 
 			// label_information
@@ -84,6 +89,7 @@ namespace FormKurs {
 			this->button_new_channel->TabIndex = 1;
 			this->button_new_channel->Text = L"PRESS";
 			this->button_new_channel->UseVisualStyleBackColor = true;
+			this->button_new_channel->Click += gcnew System::EventHandler(this, &MainForm::button_new_channel_Click);
 			// 
 			// label_new_channel
 			// 
@@ -123,22 +129,24 @@ namespace FormKurs {
 			this->button_read_channel->TabIndex = 5;
 			this->button_read_channel->Text = L"PRESS";
 			this->button_read_channel->UseVisualStyleBackColor = true;
+			this->button_read_channel->Click += gcnew System::EventHandler(this, &MainForm::button_read_channel_Click);
 			// 
-			// button_write_channe
+			// button_write_channel
 			// 
-			this->button_write_channe->Location = System::Drawing::Point(489, 333);
-			this->button_write_channe->Name = L"button_write_channe";
-			this->button_write_channe->Size = System::Drawing::Size(75, 23);
-			this->button_write_channe->TabIndex = 6;
-			this->button_write_channe->Text = L"PRESS";
-			this->button_write_channe->UseVisualStyleBackColor = true;
+			this->button_write_channel->Location = System::Drawing::Point(489, 333);
+			this->button_write_channel->Name = L"button_write_channel";
+			this->button_write_channel->Size = System::Drawing::Size(75, 23);
+			this->button_write_channel->TabIndex = 6;
+			this->button_write_channel->Text = L"PRESS";
+			this->button_write_channel->UseVisualStyleBackColor = true;
+			this->button_write_channel->Click += gcnew System::EventHandler(this, &MainForm::button_write_channel_Click);
 			// 
 			// MainForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->ClientSize = System::Drawing::Size(1105, 670);
-			this->Controls->Add(this->button_write_channe);
+			this->Controls->Add(this->button_write_channel);
 			this->Controls->Add(this->button_read_channel);
 			this->Controls->Add(this->label_new_write);
 			this->Controls->Add(this->label_open_read);
@@ -151,6 +159,34 @@ namespace FormKurs {
 			this->PerformLayout();
 
 		}
+	public:
+		Generic::List<String^>^ Channels = gcnew Generic::List<String^>();
+	public:
+		String^ temp_inf;
+
+	
+
 #pragma endregion
-	};
+	private: System::Void button_new_channel_Click(System::Object^ sender, System::EventArgs^ e) {
+		NewChannel^ f_nc = gcnew NewChannel();
+		//f_nc->Show();
+		f_nc->ShowDialog();
+		temp_inf = f_nc->textBox1->Text;
+
+		Channels->Add(temp_inf);		//помещение новых данных в "Коллекцию"
+		
+
+		//this->button_read_channel->Text = temp_inf;
+	}
+private: System::Void button_read_channel_Click(System::Object^ sender, System::EventArgs^ e) {
+	ReadChannel^ f_rc = gcnew ReadChannel(Channels);
+	f_rc->Show();
+
+}
+private: System::Void button_write_channel_Click(System::Object^ sender, System::EventArgs^ e) {
+	/*WriteChannel^ f_wc = gcnew WriteChannel(this);
+	f_wc->Show();
+	*/
+}
+};
 }

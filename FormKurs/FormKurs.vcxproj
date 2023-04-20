@@ -123,15 +123,36 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MainForm.cpp" />
+    <ClCompile Include="NewChannel.cpp" />
+    <ClCompile Include="ReadChannel.cpp" />
+    <ClCompile Include="WriteChannel.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainForm.h">
+      <FileType>CppForm</FileType>
+    </ClInclude>
+    <ClInclude Include="NewChannel.h">
+      <FileType>CppForm</FileType>
+    </ClInclude>
+    <ClInclude Include="ReadChannel.h">
+      <FileType>CppForm</FileType>
+    </ClInclude>
+    <ClInclude Include="WriteChannel.h">
       <FileType>CppForm</FileType>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.h</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NewChannel.resx">
+      <DependentUpon>NewChannel.h</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReadChannel.resx">
+      <DependentUpon>ReadChannel.h</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WriteChannel.resx">
+      <DependentUpon>WriteChannel.h</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
