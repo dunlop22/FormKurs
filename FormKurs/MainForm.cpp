@@ -3,6 +3,7 @@
 using namespace System;
 using namespace System::Windows::Forms;
 
+
 [STAThread]
 void main(array<String^>^ arg) {
     Application::EnableVisualStyles();
@@ -11,3 +12,5 @@ void main(array<String^>^ arg) {
     FormKurs::MainForm form; //WinFormsTest - имя вашего проекта
     Application::Run(% form);
 }
+
+#pragma endregion

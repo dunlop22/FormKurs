@@ -2,6 +2,7 @@
 #include "NewChannel.h"
 #include "ReadChannel.h"
 #include "WriteChannel.h"
+#include "Group_Proc.h"
 #include <string>
 
 namespace FormKurs {
@@ -46,7 +47,9 @@ namespace FormKurs {
 	private: System::Windows::Forms::Label^ label_new_write;
 	private: System::Windows::Forms::Button^ button_read_channel;
 	private: System::Windows::Forms::Button^ button_write_channel;
-		   
+	private: System::Windows::Forms::Button^ button_create_group_proc;
+	private: System::Windows::Forms::Label^ label_create_group_proc;
+
 
 	private:
 		/// <summary>
@@ -68,6 +71,8 @@ namespace FormKurs {
 			this->label_new_write = (gcnew System::Windows::Forms::Label());
 			this->button_read_channel = (gcnew System::Windows::Forms::Button());
 			this->button_write_channel = (gcnew System::Windows::Forms::Button());
+			this->button_create_group_proc = (gcnew System::Windows::Forms::Button());
+			this->label_create_group_proc = (gcnew System::Windows::Forms::Label());
 			this->SuspendLayout();
 			// 
 			// label_information
@@ -141,11 +146,33 @@ namespace FormKurs {
 			this->button_write_channel->UseVisualStyleBackColor = true;
 			this->button_write_channel->Click += gcnew System::EventHandler(this, &MainForm::button_write_channel_Click);
 			// 
+			// button_create_group_proc
+			// 
+			this->button_create_group_proc->Location = System::Drawing::Point(489, 446);
+			this->button_create_group_proc->Name = L"button_create_group_proc";
+			this->button_create_group_proc->Size = System::Drawing::Size(75, 23);
+			this->button_create_group_proc->TabIndex = 7;
+			this->button_create_group_proc->Text = L"PRESS";
+			this->button_create_group_proc->UseVisualStyleBackColor = true;
+			this->button_create_group_proc->Click += gcnew System::EventHandler(this, &MainForm::button_create_group_proc_Click);
+			// 
+			// label_create_group_proc
+			// 
+			this->label_create_group_proc->AutoSize = true;
+			this->label_create_group_proc->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12));
+			this->label_create_group_proc->Location = System::Drawing::Point(208, 446);
+			this->label_create_group_proc->Name = L"label_create_group_proc";
+			this->label_create_group_proc->Size = System::Drawing::Size(210, 20);
+			this->label_create_group_proc->TabIndex = 8;
+			this->label_create_group_proc->Text = L"Создать группу процессов";
+			// 
 			// MainForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->ClientSize = System::Drawing::Size(1105, 670);
+			this->Controls->Add(this->label_create_group_proc);
+			this->Controls->Add(this->button_create_group_proc);
 			this->Controls->Add(this->button_write_channel);
 			this->Controls->Add(this->button_read_channel);
 			this->Controls->Add(this->label_new_write);
@@ -161,32 +188,40 @@ namespace FormKurs {
 		}
 	public:
 		Generic::List<String^>^ Channels = gcnew Generic::List<String^>();
-	public:
+		Generic::List<int>^ state = gcnew Generic::List<int>();
 		String^ temp_inf;
-
-	
 
 #pragma endregion
 	private: System::Void button_new_channel_Click(System::Object^ sender, System::EventArgs^ e) {
 		NewChannel^ f_nc = gcnew NewChannel();
-		//f_nc->Show();
 		f_nc->ShowDialog();
 		temp_inf = f_nc->textBox1->Text;
-
-		Channels->Add(temp_inf);		//помещение новых данных в "Коллекцию"
-		
-
-		//this->button_read_channel->Text = temp_inf;
+		if (f_nc->rez == true)
+		{
+			//обработка только по нажатию кнопки SAVE
+			Channels->Add(temp_inf);		//помещение новых данных в "Коллекцию"
+			state->Add(0);
+		}
 	}
-private: System::Void button_read_channel_Click(System::Object^ sender, System::EventArgs^ e) {
-	ReadChannel^ f_rc = gcnew ReadChannel(Channels);
-	f_rc->Show();
 
-}
-private: System::Void button_write_channel_Click(System::Object^ sender, System::EventArgs^ e) {
-	/*WriteChannel^ f_wc = gcnew WriteChannel(this);
-	f_wc->Show();
-	*/
-}
+		//чтение из канала
+	private: System::Void button_read_channel_Click(System::Object^ sender, System::EventArgs^ e) {
+		ReadChannel^ f_rc = gcnew ReadChannel(Channels);
+		f_rc->Show();
+
+	}
+
+	    //создание нового канала
+	private: System::Void button_write_channel_Click(System::Object^ sender, System::EventArgs^ e) {
+		WriteChannel^ f_wc = gcnew WriteChannel(this->Channels, this->state);
+		f_wc->Show();
+	}
+
+
+	   //создание группы процессов
+	private: System::Void button_create_group_proc_Click(System::Object^ sender, System::EventArgs^ e) {
+		Group_Proc^ f_gp = gcnew Group_Proc(this->Channels, this->state);
+		f_gp->ShowDialog();
+	}
 };
 }

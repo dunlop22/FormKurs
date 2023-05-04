@@ -39,13 +39,14 @@ namespace FormKurs {
 		}
 	private: System::Windows::Forms::DataGridView^ dataGridView1;
 	private: System::Windows::Forms::Label^ label_information;
-
-
-
 	private: System::Windows::Forms::DataGridViewTextBoxColumn^ Number_Channel;
 	private: System::Windows::Forms::DataGridViewTextBoxColumn^ DateChannel;
 	private: System::Windows::Forms::Label^ label_channel;
 	private: System::Windows::Forms::Timer^ timer1;
+	private: System::Windows::Forms::TextBox^ textBox_num_simbol;
+	private: System::Windows::Forms::Label^ label_num_simbol;
+	private: System::Windows::Forms::Button^ button_start_read;
+	private: System::Windows::Forms::Timer^ timer2;
 	private: System::ComponentModel::IContainer^ components;
 
 
@@ -71,6 +72,10 @@ namespace FormKurs {
 			this->label_information = (gcnew System::Windows::Forms::Label());
 			this->label_channel = (gcnew System::Windows::Forms::Label());
 			this->timer1 = (gcnew System::Windows::Forms::Timer(this->components));
+			this->textBox_num_simbol = (gcnew System::Windows::Forms::TextBox());
+			this->label_num_simbol = (gcnew System::Windows::Forms::Label());
+			this->button_start_read = (gcnew System::Windows::Forms::Button());
+			this->timer2 = (gcnew System::Windows::Forms::Timer(this->components));
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dataGridView1))->BeginInit();
 			this->SuspendLayout();
 			// 
@@ -87,7 +92,6 @@ namespace FormKurs {
 			this->dataGridView1->ReadOnly = true;
 			this->dataGridView1->Size = System::Drawing::Size(466, 272);
 			this->dataGridView1->TabIndex = 0;
-			this->dataGridView1->DoubleClick += gcnew System::EventHandler(this, &ReadChannel::dataGridView1_DoubleClick);
 			// 
 			// Number_Channel
 			// 
@@ -132,11 +136,47 @@ namespace FormKurs {
 			// 
 			this->timer1->Tick += gcnew System::EventHandler(this, &ReadChannel::timer1_Tick);
 			// 
+			// textBox_num_simbol
+			// 
+			this->textBox_num_simbol->Location = System::Drawing::Point(537, 383);
+			this->textBox_num_simbol->Name = L"textBox_num_simbol";
+			this->textBox_num_simbol->Size = System::Drawing::Size(100, 20);
+			this->textBox_num_simbol->TabIndex = 3;
+			this->textBox_num_simbol->KeyPress += gcnew System::Windows::Forms::KeyPressEventHandler(this, &ReadChannel::textBox_num_simbol_KeyPress);
+			// 
+			// label_num_simbol
+			// 
+			this->label_num_simbol->AutoSize = true;
+			this->label_num_simbol->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12));
+			this->label_num_simbol->Location = System::Drawing::Point(477, 348);
+			this->label_num_simbol->Name = L"label_num_simbol";
+			this->label_num_simbol->Size = System::Drawing::Size(339, 20);
+			this->label_num_simbol->TabIndex = 4;
+			this->label_num_simbol->Text = L"Введите количество символов для чтения";
+			// 
+			// button_start_read
+			// 
+			this->button_start_read->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12));
+			this->button_start_read->Location = System::Drawing::Point(315, 430);
+			this->button_start_read->Name = L"button_start_read";
+			this->button_start_read->Size = System::Drawing::Size(146, 43);
+			this->button_start_read->TabIndex = 5;
+			this->button_start_read->Text = L"START READ";
+			this->button_start_read->UseVisualStyleBackColor = true;
+			this->button_start_read->Click += gcnew System::EventHandler(this, &ReadChannel::button_start_read_Click);
+			// 
+			// timer2
+			// 
+			this->timer2->Tick += gcnew System::EventHandler(this, &ReadChannel::timer2_Tick);
+			// 
 			// ReadChannel
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->ClientSize = System::Drawing::Size(844, 515);
+			this->Controls->Add(this->button_start_read);
+			this->Controls->Add(this->label_num_simbol);
+			this->Controls->Add(this->textBox_num_simbol);
 			this->Controls->Add(this->label_channel);
 			this->Controls->Add(this->label_information);
 			this->Controls->Add(this->dataGridView1);
@@ -145,59 +185,135 @@ namespace FormKurs {
 			this->Load += gcnew System::EventHandler(this, &ReadChannel::ReadChannel_Load);
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dataGridView1))->EndInit();
 			this->ResumeLayout(false);
+			this->PerformLayout();
 
 		}
 	private:
 		Generic::List<String^>^ Channels_old;
-#pragma endregion
-	private: System::Void ReadChannel_Load(System::Object^ sender, System::EventArgs^ e) {
-
-		//заполнение таблицы значениями
-		for (int i = 0;i < Channels_old->Count;i++)
-		{
-			this->dataGridView1->Rows->Add();		//добавление строки для значения коллекции
-			this->dataGridView1->Rows[i]->Cells[0]->Value = i + 1;
-			this->dataGridView1->Rows[i]->Cells[1]->Value = Channels_old[i];
-		}
-
-	}
-
-	private:
+		int num_simbol;		//количество символов для чтения
+		int krug = 0;
 		String^ str_channel;
 		int y = 0;
 
-	private: System::Void dataGridView1_DoubleClick(System::Object^ sender, System::EventArgs^ e) {
-		int num_channel = dataGridView1->CurrentRow->Index;		//узнать номер выбранного канала (0, 1, 2, ...)
-
-		//this->label1->Text = i.ToString();
-		
-		this->dataGridView1->Visible = false;	//скрытие таблицы
-		this->label_information->Text = "Номер канала: " + (num_channel + 1).ToString() + "\nЧтение выбранного канала";
-		this->label_channel->Visible = true;
-		//this->label_information->Visible = false;
-
-		//вывод информации из канала
-		str_channel = Channels_old[num_channel];
-
-
-		this->timer1->Interval = 500;		//установка времени для таймера
-		this->timer1->Enabled = true;		//включение таймера
-		
-
+#pragma endregion
+	private: System::Void ReadChannel_Load(System::Object^ sender, System::EventArgs^ e) {
+		if (Channels_old->Count > 0)
+		{
+			this->timer2->Interval = 500;		//установка времени для таймера
+			this->timer2->Enabled = true;		//включение таймера
+		}
+		else
+		{
+			//появление формы с соответствующим уведомлением?
+		}
 	}
-private: System::Void timer1_Tick(System::Object^ sender, System::EventArgs^ e) {
-	if (y < str_channel->Length)
+
+		//таймер для вывода данных из канала
+	private: System::Void timer1_Tick(System::Object^ sender, System::EventArgs^ e) {
+		if (y < num_simbol)
+		{
+			this->label_channel->Text = this->label_channel->Text + str_channel[y];
+			y++;
+		}
+		else
+		{
+			this->timer1->Enabled = false;		//выключение таймера
+			this->label_channel->Text = this->label_channel->Text + "\n\nЧтение канала окончено";
+		}
+	}
+
+	   //таймер обновления данных в таблице
+	private: System::Void timer2_Tick(System::Object^ sender, System::EventArgs^ e) {
+	
+		//заполнение таблицы значениями
+		for (int i = 0;i < Channels_old->Count;i++)
+		{
+			if (krug == 0)
+			{
+				this->dataGridView1->Rows->Add();		//добавление строки для значения коллекции
+			}
+			krug++;
+			this->dataGridView1->Rows[i]->Cells[0]->Value = i + 1;
+			this->dataGridView1->Rows[i]->Cells[1]->Value = Channels_old[i];
+		}
+	}
+
+private: System::Void button_start_read_Click(System::Object^ sender, System::EventArgs^ e) {
+	if (Channels_old->Count > 0)
 	{
-		this->label_channel->Text = this->label_channel->Text + str_channel[y];
-		y++;
+		if (this->textBox_num_simbol->Text != "")		//проверка на заполненность поля ввода объема потока чтения
+		{
+			this->button_start_read->Visible = false;		//скрытие кнопки
+			int num_channel = dataGridView1->CurrentRow->Index;		//узнать номер выбранного канала (0, 1, 2, ...)
+
+			this->dataGridView1->Visible = false;	//скрытие таблицы
+			this->label_num_simbol->Visible = false;	//скрытие label
+			this->textBox_num_simbol->Visible = false;	//скрытие ввода числа
+
+			this->label_channel->Visible = true;	//показ верхнего поля информации
+
+			str_channel = Channels_old[num_channel];
+
+			if (Convert::ToInt32(this->textBox_num_simbol->Text) >= str_channel->Length)
+			{
+				num_simbol = str_channel->Length;
+				//this->textBox_num_simbol->Text = str_channel->Length.ToString();		//установка в поле максимальной длины выбранного канала
+			}
+			else
+			{
+				num_simbol = Convert::ToInt32(this->textBox_num_simbol->Text);	//установка количества символов для чтения канала
+			}
+
+			//обрезка канала
+			Channels_old[num_channel] = Channels_old[num_channel]->Substring(num_simbol, str_channel->Length - num_simbol);
+
+			this->label_information->Text = "Номер канала: " + (num_channel + 1).ToString() + "\nКоличество символов для чтения: " + num_simbol + "\n\nЧтение выбранного канала";
+			//вывод информации из канала
+
+			this->timer1->Interval = 500;		//установка времени для таймера
+			this->timer1->Enabled = true;		//включение таймера
+		}
+		else
+		{
+			//Введите количество символов для чтения из канала
+		}
 	}
 	else
 	{
-		this->timer1->Enabled = false;		//выключение таймера
-		this->label_channel->Text = this->label_channel->Text + "\n\nЧтение канала окончено";
+		//нет каналов для чтения
+		//появление небольшого информирующего окна?
+	}
+	
+}
+
+	   //разрешить ввод в поле только цифр (игнорировать буквы и иные символы)
+private: System::Void textBox_num_simbol_KeyPress(System::Object^ sender, System::Windows::Forms::KeyPressEventArgs^ e) {
+	if ((e->KeyChar < 48 || e->KeyChar > 57) && e->KeyChar != 8) {
+		e->Handled = true;
+		return;
 	}
 
-
+	/*
+	if (!((e->KeyChar >= '0') && (e->KeyChar <= '9')))
+	{
+		e->Handled = true;
+	}
+	else
+	{
+		this->button_start_read->Text = (e->KeyChar).ToString();
+	}
+	*/
+	/*
+	else if (e->KeyChar == (char)8)
+	{
+		e->Handled = false;
+	}
+	if (e->KeyChar == (char)Keys->Back)
+	{
+		e->Handled = false;
+	}
+	*/
 }
+
 };
 }
