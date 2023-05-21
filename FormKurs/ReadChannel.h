@@ -228,11 +228,12 @@ namespace FormKurs {
 		//заполнение таблицы значениями
 		for (int i = 0;i < Channels_old->Count;i++)
 		{
-			if (krug == 0)
+			if (krug < Channels_old->Count)
 			{
 				this->dataGridView1->Rows->Add();		//добавление строки для значения коллекции
+				krug++;
 			}
-			krug++;
+			
 			this->dataGridView1->Rows[i]->Cells[0]->Value = i + 1;
 			this->dataGridView1->Rows[i]->Cells[1]->Value = Channels_old[i];
 		}

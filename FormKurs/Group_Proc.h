@@ -400,18 +400,14 @@ namespace FormKurs {
 			this->PerformLayout();
 
 		}
+		array<String^, 2>^ action = gcnew array<String^, 2>(10, 10);	//максимальное количество процессов - 10, максимальное колицество операций в процессе - 10
 		Generic::List<int>^ state_old;
 		Generic::List<String^>^ Channels_old = gcnew Generic::List<String^>();
 		int krug = 0;
-		Generic::List <Generic::List <String^>^>^ action;
 #pragma endregion
 	private: System::Void radioButton_r_ch_CheckedChanged(System::Object^ sender, System::EventArgs^ e) {
 		if (this->radioButton_r_ch->Checked == true)
 		{
-			Generic::List<cli::array<String^>^>^ ls = gcnew Generic::List<cli::array<String^>^>();
-			Generic::List<array<String^>^ >^ managedArray = gcnew Generic::List<array<String^>^ >();
-			managedArray[1];
-
 			this->groupBox_r_ch->Visible = true;
 			this->groupBox_w_ch->Visible = false;
 
