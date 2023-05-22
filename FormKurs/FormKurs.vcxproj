@@ -126,6 +126,7 @@
     <ClCompile Include="MainForm.cpp" />
     <ClCompile Include="NewChannel.cpp" />
     <ClCompile Include="ReadChannel.cpp" />
+    <ClCompile Include="Read_channel_func.cpp" />
     <ClCompile Include="WriteChannel.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -141,6 +142,7 @@
     <ClInclude Include="ReadChannel.h">
       <FileType>CppForm</FileType>
     </ClInclude>
+    <ClInclude Include="Read_channel_func.h" />
     <ClInclude Include="WriteChannel.h">
       <FileType>CppForm</FileType>
     </ClInclude>

@@ -1,5 +1,5 @@
 #pragma once
-
+#include "Read_channel_func.h"
 namespace FormKurs {
 
 	using namespace System;
@@ -118,7 +118,7 @@ namespace FormKurs {
 			this->label_information->Name = L"label_information";
 			this->label_information->Size = System::Drawing::Size(844, 60);
 			this->label_information->TabIndex = 1;
-			this->label_information->Text = L"¬ыберите канал дл€ чтени€ двойным щелчком мыши";
+			this->label_information->Text = L"¬ыберите канал дл€ чтени€ с помощью указател€ мыши";
 			this->label_information->TextAlign = System::Drawing::ContentAlignment::MiddleCenter;
 			// 
 			// label_channel
@@ -127,7 +127,7 @@ namespace FormKurs {
 			this->label_channel->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12));
 			this->label_channel->Location = System::Drawing::Point(0, 60);
 			this->label_channel->Name = L"label_channel";
-			this->label_channel->Size = System::Drawing::Size(844, 455);
+			this->label_channel->Size = System::Drawing::Size(844, 597);
 			this->label_channel->TabIndex = 2;
 			this->label_channel->TextAlign = System::Drawing::ContentAlignment::MiddleCenter;
 			this->label_channel->Visible = false;
@@ -138,7 +138,7 @@ namespace FormKurs {
 			// 
 			// textBox_num_simbol
 			// 
-			this->textBox_num_simbol->Location = System::Drawing::Point(537, 383);
+			this->textBox_num_simbol->Location = System::Drawing::Point(289, 437);
 			this->textBox_num_simbol->Name = L"textBox_num_simbol";
 			this->textBox_num_simbol->Size = System::Drawing::Size(100, 20);
 			this->textBox_num_simbol->TabIndex = 3;
@@ -148,16 +148,16 @@ namespace FormKurs {
 			// 
 			this->label_num_simbol->AutoSize = true;
 			this->label_num_simbol->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12));
-			this->label_num_simbol->Location = System::Drawing::Point(477, 348);
+			this->label_num_simbol->Location = System::Drawing::Point(234, 397);
 			this->label_num_simbol->Name = L"label_num_simbol";
-			this->label_num_simbol->Size = System::Drawing::Size(339, 20);
+			this->label_num_simbol->Size = System::Drawing::Size(422, 20);
 			this->label_num_simbol->TabIndex = 4;
-			this->label_num_simbol->Text = L"¬ведите количество символов дл€ чтени€";
+			this->label_num_simbol->Text = L"¬ведите количество символов дл€ чтени€ из канала:";
 			// 
 			// button_start_read
 			// 
 			this->button_start_read->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12));
-			this->button_start_read->Location = System::Drawing::Point(315, 430);
+			this->button_start_read->Location = System::Drawing::Point(330, 509);
 			this->button_start_read->Name = L"button_start_read";
 			this->button_start_read->Size = System::Drawing::Size(146, 43);
 			this->button_start_read->TabIndex = 5;
@@ -173,7 +173,7 @@ namespace FormKurs {
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-			this->ClientSize = System::Drawing::Size(844, 515);
+			this->ClientSize = System::Drawing::Size(844, 657);
 			this->Controls->Add(this->button_start_read);
 			this->Controls->Add(this->label_num_simbol);
 			this->Controls->Add(this->textBox_num_simbol);
@@ -194,6 +194,7 @@ namespace FormKurs {
 		int krug = 0;
 		String^ str_channel;
 		int y = 0;
+		Read_channel_func^ func_read;
 
 #pragma endregion
 	private: System::Void ReadChannel_Load(System::Object^ sender, System::EventArgs^ e) {
@@ -204,8 +205,11 @@ namespace FormKurs {
 		}
 		else
 		{
-			//по€вление формы с соответствующим уведомлением?
+			//по€вление сообщени€ с соответствующим текстом
+			MessageBox::Show(L"ƒл€ просмотра информации в канале необходимо создать канал.", L"Ќе найден ни один канал дл€ чтени€", MessageBoxButtons::OK, MessageBoxIcon::Information);
+			this->Close();
 		}
+		func_read = gcnew Read_channel_func();
 	}
 
 		//таймер дл€ вывода данных из канала
@@ -224,19 +228,7 @@ namespace FormKurs {
 
 	   //таймер обновлени€ данных в таблице
 	private: System::Void timer2_Tick(System::Object^ sender, System::EventArgs^ e) {
-	
-		//заполнение таблицы значени€ми
-		for (int i = 0;i < Channels_old->Count;i++)
-		{
-			if (krug < Channels_old->Count)
-			{
-				this->dataGridView1->Rows->Add();		//добавление строки дл€ значени€ коллекции
-				krug++;
-			}
-			
-			this->dataGridView1->Rows[i]->Cells[0]->Value = i + 1;
-			this->dataGridView1->Rows[i]->Cells[1]->Value = Channels_old[i];
-		}
+		func_read->update_table(Channels_old, this->dataGridView1);		//заполнение таблицы значени€ми
 	}
 
 private: System::Void button_start_read_Click(System::Object^ sender, System::EventArgs^ e) {
