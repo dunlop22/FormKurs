@@ -572,6 +572,7 @@ namespace FormKurs {
 	{
 		this->textBox_num_zn->Text = "";		//очистка поля для ввода данных для чтения
 		this->textBox_wr_inf->Text = "";		//очистка поля для ввода
+		//отмена чекеров для radiobutton
 	}
 
 	void save_command()		//запись информации о каждом шаге
@@ -631,14 +632,6 @@ namespace FormKurs {
 			}
 			
 			action[num_proc - 1, num_action - 1, 3] = (this->dataGridView_wr->CurrentRow->Index).ToString();	//канал для записи
-			if (this->textBox_wr_inf->Text != "")		//проверка заполненности поля
-			{
-				action[num_proc - 1, num_action - 1, 4] = this->textBox_wr_inf->Text;	//записываемые данные в канал
-			}
-			else
-			{
-				MessageBox::Show(L"Введите данные для записи в канал.", L"Предупреждение", MessageBoxButtons::OK, MessageBoxIcon::Information);
-			}
 		}
 	}
 
@@ -648,6 +641,7 @@ namespace FormKurs {
 		save_command();		//запись информации о текущем этапе
 		clear_all_field();	//очистка всех полей
 		num_proc = num_proc + 1;
+		num_action = 1;
 		this->label_num_proc->Text = "Процесс №" + num_proc;
 	}
 	
@@ -689,7 +683,7 @@ namespace FormKurs {
 		//this->textBox_rez_log->BackColor = Color::Gray;
 		this->textBox_rez_log->Visible = true;		
 		array<int>^ block_kanal = gcnew array<int>(Channels_old->Count);		//флажок блокировки канала
-
+		array<String^>^ temp_string_ch = gcnew array<String^>(num_proc);		//строки для перезаписи из одного канала в другой
 
 		array<int, 2>^ temp_act = gcnew array<int, 2>(num_proc, 2);		//для каждого процесса
 		for (int i = 0;i < num_proc;i++)
@@ -697,32 +691,36 @@ namespace FormKurs {
 			temp_act[i, 0] = 0;	//номер действия для процесса
 			temp_act[i, 1] = 0;	//номер порядкового (для процесса переписи из канала в канал)
 		}
+
 		int num_act = 0;		//порядковый номер действия
 		int sum_act_ok = 0;		//количество успешно выполненных действий
 		do
 		{
 			for (int i = 0; i < num_proc; i++)		//номер процесса
 			{
-				if (temp_act[i, 0] > 0)
+				if (temp_act[i, 0] > 0)		//разблокировка канала
 				{
-					block_kanal[Convert::ToInt32(action[i, (temp_act[i, 0] - 1), 1])] = 0;	//разблокировка канала после чтения
-					block_kanal[Convert::ToInt32(action[i, (temp_act[i, 0] - 1), 3])] = 0;	//разблокировка канала после записи
+					if (temp_act[i, 1] == 0)		//при процессе перезаписи канал не разблокируется
+					{
+						block_kanal[Convert::ToInt32(action[i, (temp_act[i, 0] - 1), 1])] = 0;	//разблокировка канала после чтения
+						block_kanal[Convert::ToInt32(action[i, (temp_act[i, 0] - 1), 3])] = 0;	//разблокировка канала после записи
+					}
 				}
+
 				if (action[i, temp_act[i, 0], 0] != "-5")	//если есть действие для выполнения
 				{
 					if (num_act != 0)
 					{
 						this->textBox_rez_log->Text = this->textBox_rez_log->Text + "\r\n\r\n";
 					}
-					this->textBox_rez_log->Text = this->textBox_rez_log->Text + "Действие №" + (num_act + 1) + "\r\n";
+					this->textBox_rez_log->Text = this->textBox_rez_log->Text + "Действие №" + (num_act + 1) + "\r\nПроцесс №:" + (i + 1) + ". Действие в процессе №:" + (temp_act[i, 0] + 1) + "\r\n";
 					num_act = num_act + 1;
-					if (action[i, temp_act[i, 0], 0] == "0")		//чтение канала	
+					//чтение канала	
+					if (action[i, temp_act[i, 0], 0] == "0")
 					{
 
 						if (block_kanal[Convert::ToInt32(action[i, temp_act[i, 0], 1])] == 0)		//на канале не установлена блокировка
 						{
-							//РАЗБЛОКИРОВКА КАНАЛА
-
 							//чтение данных из канала
 							int lenght_read;		//определение количества символов для считывания из канала
 							if (Convert::ToInt32(action[i, temp_act[i, 0], 2]) >= Channels_old[Convert::ToInt32(action[i, temp_act[i, 0], 1])]->Length)
@@ -737,43 +735,104 @@ namespace FormKurs {
 							String^ temp_ch = Channels_old[Convert::ToInt32(action[i, temp_act[i, 0], 1])];
 							temp_ch = temp_ch->Substring(0, lenght_read);
 							this->textBox_rez_log->Text = this->textBox_rez_log->Text + "Чтение из канала №: " + (Convert::ToInt32(action[i, temp_act[i, 0], 1]) + 1) + " - Успешно";
-							this->textBox_rez_log->Text = this->textBox_rez_log->Text + "\r\n" + "Данные из канала: " + temp_ch;	//вывод начитанного
+							if (Channels_old[Convert::ToInt32(action[i, temp_act[i, 0], 1])]->Length > 0)
+							{
 
-							//обрезка канала  (того, что прочитано из канала в поле textbox)
-							Channels_old[Convert::ToInt32(action[i, temp_act[i, 0], 1])] = Channels_old[Convert::ToInt32(action[i, temp_act[i, 0], 1])]->Substring(lenght_read, Channels_old[Convert::ToInt32(action[i, temp_act[i, 0], 1])]->Length - lenght_read);
+								this->textBox_rez_log->Text = this->textBox_rez_log->Text + "\r\n" + "Данные из канала: " + temp_ch;	//вывод начитанного
 
-							temp_act[i, 0] = temp_act[i, 0] + 1;		//смена действия для следующего прохода
-							block_kanal[Convert::ToInt32(action[i, temp_act[i, 0], 1])] = 1;		//блокировка канала	//смена блокировки
+								//обрезка канала  (того, что прочитано из канала в поле textbox)
+								Channels_old[Convert::ToInt32(action[i, temp_act[i, 0], 1])] = Channels_old[Convert::ToInt32(action[i, temp_act[i, 0], 1])]->Substring(lenght_read, Channels_old[Convert::ToInt32(action[i, temp_act[i, 0], 1])]->Length - lenght_read);
+								this->textBox_rez_log->Text = this->textBox_rez_log->Text + "\r\nКанал после операции: " + Channels_old[Convert::ToInt32(action[i, temp_act[i, 0], 1])];
+								block_kanal[Convert::ToInt32(action[i, temp_act[i, 0], 1])] = 1;		//блокировка канала	//смена блокировки
+								temp_act[i, 0] = temp_act[i, 0] + 1;		//смена действия для следующего прохода
+							}
+							else
+							{
+								this->textBox_rez_log->Text = this->textBox_rez_log->Text + "\r\nКанал пуст. Чтение отменено";
+							}
 							sum_act_ok = sum_act_ok + 1;
 						}
 						else
 						{
-							this->textBox_rez_log->Text = this->textBox_rez_log->Text + "Чтение из канала №: " + (Convert::ToInt32(action[i, temp_act[i, 0], 1]) + 1) + " - Неудачно";
+							this->textBox_rez_log->Text = this->textBox_rez_log->Text + "Чтение из канала №: " + (Convert::ToInt32(action[i, temp_act[i, 0], 1]) + 1) + " - Неудачно, канал заблокирован.";
 						}
 					}
-					else if (action[i, temp_act[i, 0], 0] == "1")		//запись в канал
+					//запись в канал
+					else if (action[i, temp_act[i, 0], 0] == "1")		
 					{
 						if (block_kanal[Convert::ToInt32(action[i, temp_act[i, 0], 3])] == 0)
 						{
 							//запись информации в канал
-							temp_act[i, 0] = temp_act[i, 0] + 1;		//смена действия для следующего прохода
+							
 							block_kanal[Convert::ToInt32(action[i, temp_act[i, 0], 3])] = 1;		//блокировка канала	//смена блокировки
 
 							this->textBox_rez_log->Text = this->textBox_rez_log->Text + "Запись в канал №: " + (Convert::ToInt32(action[i, temp_act[i, 0], 3]) + 1) + " - Успешно";
-							this->textBox_rez_log->Text = this->textBox_rez_log->Text + "\r\n" + "Новые данные в канале: " + action[i, temp_act[i, 0], 4];
+							this->textBox_rez_log->Text = this->textBox_rez_log->Text + "\r\nНовые данные в канале: " + action[i, temp_act[i, 0], 4];
 							Channels_old[Convert::ToInt32(action[i, temp_act[i, 0], 3])] = Channels_old[Convert::ToInt32(action[i, temp_act[i, 0], 3])] + action[i, temp_act[i, 0], 4];		//заполнение канала новыми данными
-							sum_act_ok = sum_act_ok + 1;
+							this->textBox_rez_log->Text = this->textBox_rez_log->Text + "\r\nКанал после операции: " + Channels_old[Convert::ToInt32(action[i, temp_act[i, 0], 3])];
+							temp_act[i, 0] = temp_act[i, 0] + 1;		//смена действия для следующего прохода
+							sum_act_ok = sum_act_ok + 1;		//подсчет общего количества проведенных операций
 						}
 						else
 						{
-							this->textBox_rez_log->Text = this->textBox_rez_log->Text + "Запись в канал №: " + (Convert::ToInt32(action[i, temp_act[i, 0], 3]) + 1) + " - Неудачно";
+							this->textBox_rez_log->Text = this->textBox_rez_log->Text + "Запись в канал №: " + (Convert::ToInt32(action[i, temp_act[i, 0], 3]) + 1) + " - Неудачно, канал заблокирован.";
 						}
 					}
-					else if (action[i, temp_act[i, 0], 0] == "2")
+					//процесс перезаписи из одного канала в другой
+					else if (action[i, temp_act[i, 0], 0] == "2")		
 					{
+						if (temp_act[i, 1] == 0)	//сначала чтение информации из канала
+						{
+							if (block_kanal[Convert::ToInt32(action[i, temp_act[i, 0], 1])] == 0)		//на канале не установлена блокировка
+							{
+								//чтение данных из канала
+								int lenght_read;		//определение количества символов для считывания из канала
+								if (Convert::ToInt32(action[i, temp_act[i, 0], 2]) >= Channels_old[Convert::ToInt32(action[i, temp_act[i, 0], 1])]->Length)
+								{
+									lenght_read = Channels_old[Convert::ToInt32(action[i, temp_act[i, 0], 1])]->Length;	//указанное количество символов больше, чем символов в канале
+								}
+								else
+								{
+									lenght_read = Convert::ToInt32(action[i, temp_act[i, 0], 2]);
+								}
+								temp_string_ch[i] = Channels_old[Convert::ToInt32(action[i, temp_act[i, 0], 1])];
+								temp_string_ch[i] = temp_string_ch[i]->Substring(0, lenght_read);
+								this->textBox_rez_log->Text = this->textBox_rez_log->Text + "Чтение из канала №: " + (Convert::ToInt32(action[i, temp_act[i, 0], 1]) + 1) + " - Успешно";
+								this->textBox_rez_log->Text = this->textBox_rez_log->Text + "\r\nДанные из канала: " + temp_string_ch[i] + "\r\nДанные записаны в буфер";	//вывод начитанного
+								//обрезка канала  (того, что прочитано из канала в поле textbox)
+								Channels_old[Convert::ToInt32(action[i, temp_act[i, 0], 1])] = Channels_old[Convert::ToInt32(action[i, temp_act[i, 0], 1])]->Substring(lenght_read, Channels_old[Convert::ToInt32(action[i, temp_act[i, 0], 1])]->Length - lenght_read);
 
+								temp_act[i, 1] = temp_act[i, 1] + 1;		//смена действия для следующего прохода
+								block_kanal[Convert::ToInt32(action[i, temp_act[i, 0], 1])] = 1;		//блокировка канала	//смена блокировки
+								sum_act_ok = sum_act_ok + 1;
+							}
+							else
+							{
+								this->textBox_rez_log->Text = this->textBox_rez_log->Text + "Чтение из канала №: " + (Convert::ToInt32(action[i, temp_act[i, 0], 1]) + 1) + " - Неудачно, канал заблокирован.";
+							}
+						}
+						else        //процесс записи в канал
+						{
+							//запись информации в канал
+							
+							block_kanal[Convert::ToInt32(action[i, temp_act[i, 0], 3])] = 1;		//блокировка канала	//смена блокировки
+							this->textBox_rez_log->Text = this->textBox_rez_log->Text + "Запись в канал №: " + (Convert::ToInt32(action[i, temp_act[i, 0], 3]) + 1) + " - Успешно";
+							this->textBox_rez_log->Text = this->textBox_rez_log->Text + "\r\nНовые данные в канале: " + temp_string_ch[i];
+							Channels_old[Convert::ToInt32(action[i, temp_act[i, 0], 3])] = Channels_old[Convert::ToInt32(action[i, temp_act[i, 0], 3])] + temp_string_ch[i];		//заполнение канала новыми данными
+							this->textBox_rez_log->Text = this->textBox_rez_log->Text + "\r\nКанал после операции: " + Channels_old[Convert::ToInt32(action[i, temp_act[i, 0], 3])];
+							temp_act[i, 0] = temp_act[i, 0] + 1;		//смена действия для следующего прохода
+							temp_act[i, 1] = temp_act[i, 1] + 1;		//смена действия для следующего прохода
+							sum_act_ok = sum_act_ok + 1;
+						}
 					}
 				}
+				/*
+				if (action[i, temp_act[i, 0], 0] == "-5" && (action[i, (temp_act[i, 0] - 1), 0] == "0" || action[i, (temp_act[i, 0] - 1), 0] == "1" || action[i, (temp_act[i, 0] - 1), 0] == "2"))
+				{
+					temp_act[i, 0] = temp_act[i, 0] + 1;
+					this->textBox_rez_log->Text = this->textBox_rez_log->Text + "\r\nРабота процесса №" + (i + 1) + " завершена";
+				}
+				*/
 
 			}
 			//проверка всех пройденных маршрутов (каналов / процессов)
