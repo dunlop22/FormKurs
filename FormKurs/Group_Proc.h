@@ -66,6 +66,10 @@ namespace FormKurs {
 	private: System::Windows::Forms::Label^ label_num_action;
 	private: System::Windows::Forms::Button^ button_main_start;
 	private: System::Windows::Forms::TextBox^ textBox_rez_log;
+	private: System::Windows::Forms::GroupBox^ groupBox_buffer_act;
+	private: System::Windows::Forms::TextBox^ textBox_buffer_act;
+
+
 
 	private: System::ComponentModel::IContainer^ components;
 
@@ -111,12 +115,15 @@ namespace FormKurs {
 			this->groupBox_mode = (gcnew System::Windows::Forms::GroupBox());
 			this->timer1 = (gcnew System::Windows::Forms::Timer(this->components));
 			this->label_num_action = (gcnew System::Windows::Forms::Label());
+			this->groupBox_buffer_act = (gcnew System::Windows::Forms::GroupBox());
+			this->textBox_buffer_act = (gcnew System::Windows::Forms::TextBox());
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dataGridView_r))->BeginInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dataGridView_wr))->BeginInit();
 			this->groupBox_r_ch->SuspendLayout();
 			this->groupBox_w_ch->SuspendLayout();
 			this->groupBox_change->SuspendLayout();
 			this->groupBox_mode->SuspendLayout();
+			this->groupBox_buffer_act->SuspendLayout();
 			this->SuspendLayout();
 			// 
 			// radioButton_r_ch
@@ -161,10 +168,10 @@ namespace FormKurs {
 			this->radioButton_r_to_wr_ch->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12));
 			this->radioButton_r_to_wr_ch->Location = System::Drawing::Point(6, 276);
 			this->radioButton_r_to_wr_ch->Name = L"radioButton_r_to_wr_ch";
-			this->radioButton_r_to_wr_ch->Size = System::Drawing::Size(326, 24);
+			this->radioButton_r_to_wr_ch->Size = System::Drawing::Size(179, 44);
 			this->radioButton_r_to_wr_ch->TabIndex = 3;
 			this->radioButton_r_to_wr_ch->TabStop = true;
-			this->radioButton_r_to_wr_ch->Text = L"Чтение из канала N и запись в канал M";
+			this->radioButton_r_to_wr_ch->Text = L"Чтение из канала N\r\n  и запись в канал M";
 			this->radioButton_r_to_wr_ch->UseVisualStyleBackColor = true;
 			this->radioButton_r_to_wr_ch->CheckedChanged += gcnew System::EventHandler(this, &Group_Proc::radioButton_r_to_wr_ch_CheckedChanged);
 			// 
@@ -172,7 +179,7 @@ namespace FormKurs {
 			// 
 			this->label_new_action->AutoSize = true;
 			this->label_new_action->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12));
-			this->label_new_action->Location = System::Drawing::Point(81, 31);
+			this->label_new_action->Location = System::Drawing::Point(32, 31);
 			this->label_new_action->Name = L"label_new_action";
 			this->label_new_action->Size = System::Drawing::Size(217, 20);
 			this->label_new_action->TabIndex = 4;
@@ -182,7 +189,7 @@ namespace FormKurs {
 			// 
 			this->label_new_proc->AutoSize = true;
 			this->label_new_proc->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12));
-			this->label_new_proc->Location = System::Drawing::Point(447, 31);
+			this->label_new_proc->Location = System::Drawing::Point(366, 31);
 			this->label_new_proc->Name = L"label_new_proc";
 			this->label_new_proc->Size = System::Drawing::Size(214, 20);
 			this->label_new_proc->TabIndex = 5;
@@ -191,7 +198,7 @@ namespace FormKurs {
 			// button_new_action
 			// 
 			this->button_new_action->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12));
-			this->button_new_action->Location = System::Drawing::Point(147, 71);
+			this->button_new_action->Location = System::Drawing::Point(82, 71);
 			this->button_new_action->Name = L"button_new_action";
 			this->button_new_action->Size = System::Drawing::Size(87, 43);
 			this->button_new_action->TabIndex = 6;
@@ -202,7 +209,7 @@ namespace FormKurs {
 			// button_new_proc
 			// 
 			this->button_new_proc->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12));
-			this->button_new_proc->Location = System::Drawing::Point(510, 71);
+			this->button_new_proc->Location = System::Drawing::Point(437, 71);
 			this->button_new_proc->Name = L"button_new_proc";
 			this->button_new_proc->Size = System::Drawing::Size(87, 43);
 			this->button_new_proc->TabIndex = 7;
@@ -218,9 +225,9 @@ namespace FormKurs {
 				this->Num_Channel,
 					this->Int_Channel
 			});
-			this->dataGridView_r->Location = System::Drawing::Point(78, 81);
+			this->dataGridView_r->Location = System::Drawing::Point(22, 81);
 			this->dataGridView_r->Name = L"dataGridView_r";
-			this->dataGridView_r->Size = System::Drawing::Size(277, 150);
+			this->dataGridView_r->Size = System::Drawing::Size(277, 170);
 			this->dataGridView_r->TabIndex = 8;
 			this->dataGridView_r->Visible = false;
 			// 
@@ -246,7 +253,7 @@ namespace FormKurs {
 				this->Num_Channel1,
 					this->Int_Channel1
 			});
-			this->dataGridView_wr->Location = System::Drawing::Point(49, 81);
+			this->dataGridView_wr->Location = System::Drawing::Point(18, 81);
 			this->dataGridView_wr->Name = L"dataGridView_wr";
 			this->dataGridView_wr->Size = System::Drawing::Size(259, 150);
 			this->dataGridView_wr->TabIndex = 9;
@@ -270,7 +277,7 @@ namespace FormKurs {
 			// 
 			this->label_ch_r->AutoSize = true;
 			this->label_ch_r->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12));
-			this->label_ch_r->Location = System::Drawing::Point(74, 36);
+			this->label_ch_r->Location = System::Drawing::Point(18, 36);
 			this->label_ch_r->Name = L"label_ch_r";
 			this->label_ch_r->Size = System::Drawing::Size(226, 20);
 			this->label_ch_r->TabIndex = 10;
@@ -281,7 +288,7 @@ namespace FormKurs {
 			// 
 			this->label_ch_w->AutoSize = true;
 			this->label_ch_w->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12));
-			this->label_ch_w->Location = System::Drawing::Point(45, 36);
+			this->label_ch_w->Location = System::Drawing::Point(37, 36);
 			this->label_ch_w->Name = L"label_ch_w";
 			this->label_ch_w->Size = System::Drawing::Size(224, 20);
 			this->label_ch_w->TabIndex = 11;
@@ -292,7 +299,7 @@ namespace FormKurs {
 			// 
 			this->label_num_zn->AutoSize = true;
 			this->label_num_zn->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12));
-			this->label_num_zn->Location = System::Drawing::Point(84, 274);
+			this->label_num_zn->Location = System::Drawing::Point(45, 274);
 			this->label_num_zn->Name = L"label_num_zn";
 			this->label_num_zn->Size = System::Drawing::Size(234, 20);
 			this->label_num_zn->TabIndex = 12;
@@ -301,7 +308,7 @@ namespace FormKurs {
 			// 
 			// textBox_num_zn
 			// 
-			this->textBox_num_zn->Location = System::Drawing::Point(88, 323);
+			this->textBox_num_zn->Location = System::Drawing::Point(49, 323);
 			this->textBox_num_zn->Name = L"textBox_num_zn";
 			this->textBox_num_zn->Size = System::Drawing::Size(230, 20);
 			this->textBox_num_zn->TabIndex = 13;
@@ -312,7 +319,7 @@ namespace FormKurs {
 			// 
 			this->label_new_inf->AutoSize = true;
 			this->label_new_inf->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12));
-			this->label_new_inf->Location = System::Drawing::Point(90, 274);
+			this->label_new_inf->Location = System::Drawing::Point(71, 274);
 			this->label_new_inf->Name = L"label_new_inf";
 			this->label_new_inf->Size = System::Drawing::Size(158, 20);
 			this->label_new_inf->TabIndex = 14;
@@ -321,7 +328,7 @@ namespace FormKurs {
 			// 
 			// textBox_wr_inf
 			// 
-			this->textBox_wr_inf->Location = System::Drawing::Point(94, 323);
+			this->textBox_wr_inf->Location = System::Drawing::Point(75, 323);
 			this->textBox_wr_inf->Name = L"textBox_wr_inf";
 			this->textBox_wr_inf->Size = System::Drawing::Size(154, 20);
 			this->textBox_wr_inf->TabIndex = 15;
@@ -333,9 +340,9 @@ namespace FormKurs {
 			this->groupBox_r_ch->Controls->Add(this->label_ch_r);
 			this->groupBox_r_ch->Controls->Add(this->label_num_zn);
 			this->groupBox_r_ch->Controls->Add(this->textBox_num_zn);
-			this->groupBox_r_ch->Location = System::Drawing::Point(447, 73);
+			this->groupBox_r_ch->Location = System::Drawing::Point(274, 73);
 			this->groupBox_r_ch->Name = L"groupBox_r_ch";
-			this->groupBox_r_ch->Size = System::Drawing::Size(405, 392);
+			this->groupBox_r_ch->Size = System::Drawing::Size(319, 392);
 			this->groupBox_r_ch->TabIndex = 16;
 			this->groupBox_r_ch->TabStop = false;
 			this->groupBox_r_ch->Text = L"Чтение";
@@ -343,7 +350,7 @@ namespace FormKurs {
 			// 
 			// textBox_rez_log
 			// 
-			this->textBox_rez_log->Location = System::Drawing::Point(49, 9);
+			this->textBox_rez_log->Location = System::Drawing::Point(49, 67);
 			this->textBox_rez_log->Multiline = true;
 			this->textBox_rez_log->Name = L"textBox_rez_log";
 			this->textBox_rez_log->ReadOnly = true;
@@ -358,9 +365,9 @@ namespace FormKurs {
 			this->groupBox_w_ch->Controls->Add(this->label_ch_w);
 			this->groupBox_w_ch->Controls->Add(this->textBox_wr_inf);
 			this->groupBox_w_ch->Controls->Add(this->label_new_inf);
-			this->groupBox_w_ch->Location = System::Drawing::Point(891, 73);
+			this->groupBox_w_ch->Location = System::Drawing::Point(612, 73);
 			this->groupBox_w_ch->Name = L"groupBox_w_ch";
-			this->groupBox_w_ch->Size = System::Drawing::Size(329, 392);
+			this->groupBox_w_ch->Size = System::Drawing::Size(297, 392);
 			this->groupBox_w_ch->TabIndex = 17;
 			this->groupBox_w_ch->TabStop = false;
 			this->groupBox_w_ch->Text = L"Запись";
@@ -373,7 +380,7 @@ namespace FormKurs {
 			this->groupBox_change->Controls->Add(this->label_new_proc);
 			this->groupBox_change->Controls->Add(this->button_new_action);
 			this->groupBox_change->Controls->Add(this->button_new_proc);
-			this->groupBox_change->Location = System::Drawing::Point(102, 522);
+			this->groupBox_change->Location = System::Drawing::Point(49, 486);
 			this->groupBox_change->Name = L"groupBox_change";
 			this->groupBox_change->Size = System::Drawing::Size(1090, 132);
 			this->groupBox_change->TabIndex = 18;
@@ -382,7 +389,7 @@ namespace FormKurs {
 			// button_main_start
 			// 
 			this->button_main_start->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12));
-			this->button_main_start->Location = System::Drawing::Point(852, 46);
+			this->button_main_start->Location = System::Drawing::Point(651, 46);
 			this->button_main_start->Name = L"button_main_start";
 			this->button_main_start->Size = System::Drawing::Size(209, 68);
 			this->button_main_start->TabIndex = 8;
@@ -397,7 +404,7 @@ namespace FormKurs {
 			this->groupBox_mode->Controls->Add(this->radioButton_r_to_wr_ch);
 			this->groupBox_mode->Location = System::Drawing::Point(49, 73);
 			this->groupBox_mode->Name = L"groupBox_mode";
-			this->groupBox_mode->Size = System::Drawing::Size(348, 392);
+			this->groupBox_mode->Size = System::Drawing::Size(196, 392);
 			this->groupBox_mode->TabIndex = 19;
 			this->groupBox_mode->TabStop = false;
 			this->groupBox_mode->Text = L"Выбор операции над каналом";
@@ -416,12 +423,33 @@ namespace FormKurs {
 			this->label_num_action->TabIndex = 20;
 			this->label_num_action->Text = L"Действие №";
 			// 
+			// groupBox_buffer_act
+			// 
+			this->groupBox_buffer_act->Controls->Add(this->textBox_buffer_act);
+			this->groupBox_buffer_act->Location = System::Drawing::Point(940, 73);
+			this->groupBox_buffer_act->Name = L"groupBox_buffer_act";
+			this->groupBox_buffer_act->Size = System::Drawing::Size(282, 563);
+			this->groupBox_buffer_act->TabIndex = 21;
+			this->groupBox_buffer_act->TabStop = false;
+			this->groupBox_buffer_act->Text = L"Буфер действий";
+			// 
+			// textBox_buffer_act
+			// 
+			this->textBox_buffer_act->BackColor = System::Drawing::SystemColors::ButtonHighlight;
+			this->textBox_buffer_act->Location = System::Drawing::Point(14, 20);
+			this->textBox_buffer_act->Multiline = true;
+			this->textBox_buffer_act->Name = L"textBox_buffer_act";
+			this->textBox_buffer_act->ReadOnly = true;
+			this->textBox_buffer_act->Size = System::Drawing::Size(262, 537);
+			this->textBox_buffer_act->TabIndex = 0;
+			// 
 			// Group_Proc
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->ClientSize = System::Drawing::Size(1243, 649);
 			this->Controls->Add(this->textBox_rez_log);
+			this->Controls->Add(this->groupBox_buffer_act);
 			this->Controls->Add(this->label_num_action);
 			this->Controls->Add(this->groupBox_mode);
 			this->Controls->Add(this->groupBox_change);
@@ -441,6 +469,8 @@ namespace FormKurs {
 			this->groupBox_change->PerformLayout();
 			this->groupBox_mode->ResumeLayout(false);
 			this->groupBox_mode->PerformLayout();
+			this->groupBox_buffer_act->ResumeLayout(false);
+			this->groupBox_buffer_act->PerformLayout();
 			this->ResumeLayout(false);
 			this->PerformLayout();
 
@@ -573,9 +603,17 @@ namespace FormKurs {
 		this->textBox_num_zn->Text = "";		//очистка поля для ввода данных для чтения
 		this->textBox_wr_inf->Text = "";		//очистка поля для ввода
 		//отмена чекеров для radiobutton
+		if (num_action < 10)
+		{
+			this->radioButton_r_to_wr_ch->Checked = false;
+			this->radioButton_r_ch->Checked = false;
+			this->radioButton_wr_ch->Checked = false;
+			this->groupBox_r_ch->Visible = false;
+			this->groupBox_w_ch->Visible = false;
+		}
 	}
 
-	void save_command()		//запись информации о каждом шаге
+	int save_command()		//запись информации о каждом шаге
 	{
 		//[0] - выбор действия
 			//0 - чтение из канала
@@ -595,11 +633,18 @@ namespace FormKurs {
 			if (this->textBox_num_zn->Text != "")		//проверка заполненности поля
 			{
 				action[num_proc - 1, num_action - 1, 2] = this->textBox_num_zn->Text;	//количество символов для чтения
+				this->textBox_buffer_act->Text = this->textBox_buffer_act->Text + "Процесс №" + num_proc + ". Действие №" + num_action;
+				this->textBox_buffer_act->Text = this->textBox_buffer_act->Text + "\r\nЧтение из канала № " + ((this->dataGridView_r->CurrentRow->Index).ToString() + 1) + ". " + this->textBox_num_zn->Text + " симв.\r\n\r\n";
+				return 0;		//good
 			}
 			else
 			{
 				MessageBox::Show(L"Введите количество символов для чтения из канала.", L"Предупреждение", MessageBoxButtons::OK, MessageBoxIcon::Information);
+				return 1;		//bad
 			}
+
+			
+			
 		}
 
 		//запись в канал
@@ -610,10 +655,14 @@ namespace FormKurs {
 			if (this->textBox_wr_inf->Text != "")		//проверка заполненности поля
 			{
 				action[num_proc - 1, num_action - 1, 4] = this->textBox_wr_inf->Text;	//записываемые данные в канал
+				this->textBox_buffer_act->Text = this->textBox_buffer_act->Text + "Процесс №" + num_proc + ". Действие №" + num_action;
+				this->textBox_buffer_act->Text = this->textBox_buffer_act->Text + "\r\nЗапись в канал № " + ((this->dataGridView_wr->CurrentRow->Index).ToString() + 1) + ".\r\nДанные в канал: " + this->textBox_wr_inf->Text; + "\r\n\r\n";
+				return 0;	//good
 			}
 			else
 			{
 				MessageBox::Show(L"Введите данные для записи в канал.", L"Предупреждение", MessageBoxButtons::OK, MessageBoxIcon::Information);
+				return 2;	//bad
 			}
 		}
 
@@ -625,33 +674,83 @@ namespace FormKurs {
 			if (this->textBox_num_zn->Text != "")		//проверка заполненности поля
 			{
 				action[num_proc - 1, num_action - 1, 2] = this->textBox_num_zn->Text;	//количество символов для чтения
+				this->textBox_buffer_act->Text = this->textBox_buffer_act->Text + "Процесс №" + num_proc + ". Действие №" + num_action;
+				this->textBox_buffer_act->Text = this->textBox_buffer_act->Text + "\r\nПерезапись из канала " + ((this->dataGridView_r->CurrentRow->Index).ToString() + 1) + "в канал №" + (this->dataGridView_wr->CurrentRow->Index).ToString() + ". " + this->textBox_num_zn->Text + " симв.\r\n\r\n";
+				action[num_proc - 1, num_action - 1, 3] = (this->dataGridView_wr->CurrentRow->Index).ToString();	//канал для записи
+				return 0;		//good;
 			}
 			else
 			{
 				MessageBox::Show(L"Введите количество символов для чтения из канала.", L"Предупреждение", MessageBoxButtons::OK, MessageBoxIcon::Information);
+				return 3;		//bad;
 			}
 			
-			action[num_proc - 1, num_action - 1, 3] = (this->dataGridView_wr->CurrentRow->Index).ToString();	//канал для записи
+			
 		}
+
+		
 	}
 
 	private: System::Void button_new_proc_Click(System::Object^ sender, System::EventArgs^ e) {
-
 		//сохранение всех введенных данных через функцию
-		save_command();		//запись информации о текущем этапе
-		clear_all_field();	//очистка всех полей
-		num_proc = num_proc + 1;
-		num_action = 1;
-		this->label_num_proc->Text = "Процесс №" + num_proc;
+		 
+		//запрет создания пустого процесса
+
+		if ((this->radioButton_r_ch->Checked == false && this->radioButton_wr_ch->Checked == false && this->radioButton_r_to_wr_ch->Checked == false))
+		{
+			if (num_proc <= 10)
+			{
+				num_proc = num_proc + 1;
+				num_action = 1;
+				this->label_num_proc->Text = "Процесс №" + num_proc;
+				this->label_num_action->Text = "Действие №" + num_action;
+			}
+			else
+			{
+				MessageBox::Show(L"Создано максимальное количество процессов.", L"Предупреждение", MessageBoxButtons::OK, MessageBoxIcon::Information);
+			}
+			return;
+		}
+		
+		if (save_command() == 0)		//запись информации о текущем этапе
+		{
+			clear_all_field();	//очистка всех полей
+			if (num_proc <= 10)
+			{
+				num_proc = num_proc + 1;
+				num_action = 1;
+				this->label_num_proc->Text = "Процесс №" + num_proc;
+				this->label_num_action->Text = "Действие №" + num_action;
+			}
+			else
+			{
+				MessageBox::Show(L"Создано максимальное количество процессов.", L"Предупреждение", MessageBoxButtons::OK, MessageBoxIcon::Information);
+			}
+		}
 	}
 	
 	private: System::Void button_new_action_Click(System::Object^ sender, System::EventArgs^ e) {
-		//сохранение всех введенных данных через функцию
-		save_command();		//запись информации о текущем этапе
-		clear_all_field();	//очистка всех полей
-		num_action = num_action + 1;
-		this->label_num_action->Text = "Действие №" + num_action;
+		if (!(this->radioButton_r_ch->Checked == false && this->radioButton_wr_ch->Checked == false && this->radioButton_r_to_wr_ch->Checked == false))
+		{
+			if (num_action <= 10)
+			{
+				//сохранение всех введенных данных через функцию
+				if (save_command() == 0)		//запись информации о текущем этапе
+				{
+					clear_all_field();	//очистка всех полей
+					if (num_action < 10)
+					{
+						num_action = num_action + 1;	
+						this->label_num_action->Text = "Действие №" + num_action;
+					}
+				}
+			}
+			else
+			{
+				MessageBox::Show(L"Создано максимальное количество действий для данного процесса.", L"Предупреждение", MessageBoxButtons::OK, MessageBoxIcon::Information);
+			}
 
+		}
 	}
 
 	void interprocess_interaction()
@@ -683,10 +782,10 @@ namespace FormKurs {
 		//this->textBox_rez_log->BackColor = Color::Gray;
 		this->textBox_rez_log->Visible = true;		
 		array<int>^ block_kanal = gcnew array<int>(Channels_old->Count);		//флажок блокировки канала
-		array<String^>^ temp_string_ch = gcnew array<String^>(num_proc);		//строки для перезаписи из одного канала в другой
+		array<String^>^ temp_string_ch = gcnew array<String^>(num_proc);		//строки для перезаписи из одного канала в другой (кол-во строк = кол-во прцессов)
 
 		array<int, 2>^ temp_act = gcnew array<int, 2>(num_proc, 2);		//для каждого процесса
-		for (int i = 0;i < num_proc;i++)
+		for (int i = 0; i < num_proc; i++)
 		{
 			temp_act[i, 0] = 0;	//номер действия для процесса
 			temp_act[i, 1] = 0;	//номер порядкового (для процесса переписи из канала в канал)
@@ -698,14 +797,35 @@ namespace FormKurs {
 		{
 			for (int i = 0; i < num_proc; i++)		//номер процесса
 			{
-				if (temp_act[i, 0] > 0)		//разблокировка канала
+				//разблокировка каналов
+
+				if (action[i, temp_act[i, 0], 0] != "2")
+				//if (temp_act[i, 1] != 1)		//при процессе перезаписи канал не разблокируется
 				{
-					if (temp_act[i, 1] == 0)		//при процессе перезаписи канал не разблокируется
+					if (temp_act[i, 0] > 0)
 					{
-						block_kanal[Convert::ToInt32(action[i, (temp_act[i, 0] - 1), 1])] = 0;	//разблокировка канала после чтения
-						block_kanal[Convert::ToInt32(action[i, (temp_act[i, 0] - 1), 3])] = 0;	//разблокировка канала после записи
+						block_kanal[Convert::ToInt32(action[i, (temp_act[i, 0] - 1), 1])] = 0;
+						block_kanal[Convert::ToInt32(action[i, (temp_act[i, 0] - 1), 3])] = 0;
+						/*
+						block_kanal[Convert::ToInt32(action[i, temp_act[i, 0], 1])] = 0;	//разблокировка канала после чтения
+						block_kanal[Convert::ToInt32(action[i, temp_act[i, 0], 3])] = 0;	//разблокировка канала после записи
+						*/
 					}
 				}
+				if (action[i, temp_act[i, 0], 0] == "2")
+				{
+					if (temp_act[i, 1] != 1)
+					{
+						if (temp_act[i, 0] > 0)
+						{
+							block_kanal[Convert::ToInt32(action[i, (temp_act[i, 0] - 1), 1])] = 0;
+							block_kanal[Convert::ToInt32(action[i, (temp_act[i, 0] - 1), 3])] = 0;
+						}
+					}
+				}
+
+
+
 
 				if (action[i, temp_act[i, 0], 0] != "-5")	//если есть действие для выполнения
 				{
@@ -715,6 +835,7 @@ namespace FormKurs {
 					}
 					this->textBox_rez_log->Text = this->textBox_rez_log->Text + "Действие №" + (num_act + 1) + "\r\nПроцесс №:" + (i + 1) + ". Действие в процессе №:" + (temp_act[i, 0] + 1) + "\r\n";
 					num_act = num_act + 1;
+
 					//чтение канала	
 					if (action[i, temp_act[i, 0], 0] == "0")
 					{
@@ -757,6 +878,7 @@ namespace FormKurs {
 							this->textBox_rez_log->Text = this->textBox_rez_log->Text + "Чтение из канала №: " + (Convert::ToInt32(action[i, temp_act[i, 0], 1]) + 1) + " - Неудачно, канал заблокирован.";
 						}
 					}
+
 					//запись в канал
 					else if (action[i, temp_act[i, 0], 0] == "1")		
 					{
@@ -851,6 +973,7 @@ namespace FormKurs {
 		clear_all_field();	//очистка всех полей
 		this->label_num_action->Visible = false;
 		this->label_num_proc->Visible = false;
+		this->groupBox_buffer_act->Visible = false;
 		interprocess_interaction();
 		//очистка всего поля
 		//вывод лога последовательности действий
