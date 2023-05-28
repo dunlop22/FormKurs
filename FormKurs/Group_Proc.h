@@ -675,7 +675,7 @@ namespace FormKurs {
 			{
 				Proccess_[num_proc - 1]->new_act_rw(this->dataGridView_r->CurrentRow->Index, Convert::ToInt32(this->textBox_num_zn->Text), this->dataGridView_wr->CurrentRow->Index);
 				this->textBox_buffer_act->Text = this->textBox_buffer_act->Text + "Процесс №" + num_proc + ". Действие №" + num_action;
-				this->textBox_buffer_act->Text = this->textBox_buffer_act->Text + "\r\nПерезапись из канала " + ((this->dataGridView_r->CurrentRow->Index).ToString() + 1) + "в канал №" + (this->dataGridView_wr->CurrentRow->Index).ToString() + ". " + this->textBox_num_zn->Text + " симв.\r\n\r\n";
+				this->textBox_buffer_act->Text = this->textBox_buffer_act->Text + "\r\nПерезапись из канала " + ((this->dataGridView_r->CurrentRow->Index).ToString() + 1) + "в канал №" + ((this->dataGridView_wr->CurrentRow->Index).ToString() + 1) + ". " + this->textBox_num_zn->Text + " симв.\r\n\r\n";
 				return 0;		//good;
 			}
 			else

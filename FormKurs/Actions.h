@@ -2,7 +2,7 @@
 using namespace System;
 ref class Actions
 {
-protected:
+private:
 	int num_action;
 	int num_pipes_read;
 	int num_simbol;

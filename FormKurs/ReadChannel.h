@@ -140,7 +140,7 @@ namespace FormKurs {
 			// 
 			// textBox_num_simbol
 			// 
-			this->textBox_num_simbol->Location = System::Drawing::Point(289, 437);
+			this->textBox_num_simbol->Location = System::Drawing::Point(340, 432);
 			this->textBox_num_simbol->Name = L"textBox_num_simbol";
 			this->textBox_num_simbol->Size = System::Drawing::Size(100, 20);
 			this->textBox_num_simbol->TabIndex = 3;
@@ -150,7 +150,7 @@ namespace FormKurs {
 			// 
 			this->label_num_simbol->AutoSize = true;
 			this->label_num_simbol->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12));
-			this->label_num_simbol->Location = System::Drawing::Point(234, 397);
+			this->label_num_simbol->Location = System::Drawing::Point(186, 394);
 			this->label_num_simbol->Name = L"label_num_simbol";
 			this->label_num_simbol->Size = System::Drawing::Size(422, 20);
 			this->label_num_simbol->TabIndex = 4;
@@ -159,7 +159,7 @@ namespace FormKurs {
 			// button_start_read
 			// 
 			this->button_start_read->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12));
-			this->button_start_read->Location = System::Drawing::Point(330, 509);
+			this->button_start_read->Location = System::Drawing::Point(316, 505);
 			this->button_start_read->Name = L"button_start_read";
 			this->button_start_read->Size = System::Drawing::Size(146, 43);
 			this->button_start_read->TabIndex = 5;

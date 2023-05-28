@@ -188,8 +188,8 @@ namespace FormKurs {
 
 		}
 	public:
-		Generic::List<String^>^ Channels = gcnew Generic::List<String^>();
-		Generic::List<int>^ state = gcnew Generic::List<int>();
+		//Generic::List<String^>^ Channels = gcnew Generic::List<String^>();
+		//Generic::List<int>^ state = gcnew Generic::List<int>();
 		String^ temp_inf;
 		Generic::List<Pipes^>^ Pipes_ = gcnew Generic::List<Pipes^>();
 		int num_pipe = 0;
@@ -202,12 +202,6 @@ namespace FormKurs {
 		Pipes^ pipe_temp = gcnew Pipes(num_pipe);
 		if (f_nc->rez == true)
 		{
-			
-
-
-			//обработка только по нажатию кнопки SAVE
-			//Channels->Add(temp_inf);		//помещение новых данных в "Коллекцию"
-			//state->Add(0);
 			if (!(pipe_temp->check_block()))
 			{
 				pipe_temp->p_write(temp_inf);
