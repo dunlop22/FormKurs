@@ -258,17 +258,18 @@ namespace FormKurs {
 			this->button_save_exit->Visible = true;
 			this->label_current_info->Visible = true;
 			this->label_new_info_for_channel->Visible = true;
-			this->label_information->Visible = true;
+			this->label_information->Visible = false;
+			this->current_info_in_channel->Visible = true;
 
 			num_channel = dataGridView1->CurrentRow->Index;		//узнать номер выбранного канала (0, 1, 2, ...)
-			this->label_current_info->Text = Pipes_old[dataGridView1->CurrentRow->Index]->p_read();
+			this->current_info_in_channel->Text = Pipes_old[dataGridView1->CurrentRow->Index]->p_read();
 //			this->textBox_channel->Text = Pipes_old[dataGridView1->CurrentRow->Index]->p_read();
 		}
 	}
 
 	private: System::Void button_save_Click(System::Object^ sender, System::EventArgs^ e) {
 		Pipes_old[num_channel]->p_write(Pipes_old[dataGridView1->CurrentRow->Index]->p_read() + textBox_channel->Text);
-		this->label_current_info->Text = Pipes_old[dataGridView1->CurrentRow->Index]->p_read();
+		this->current_info_in_channel->Text = Pipes_old[dataGridView1->CurrentRow->Index]->p_read();
 		this->textBox_channel->Text = "";
 	}
 

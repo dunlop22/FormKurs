@@ -231,8 +231,16 @@ namespace FormKurs {
 
 	   //создание группы процессов
 	private: System::Void button_create_group_proc_Click(System::Object^ sender, System::EventArgs^ e) {
-		Group_Proc^ f_gp = gcnew Group_Proc(Pipes_);
-		f_gp->ShowDialog();
+		if (Pipes_->Count > 0)
+		{
+			Group_Proc^ f_gp = gcnew Group_Proc(Pipes_);
+			f_gp->ShowDialog();
+		}
+		else
+		{
+			MessageBox::Show(L"Для моделирования межпроцессового взаимодействия необходимо создать канал хотя бы один канал.", L"Не найден ни один канал", MessageBoxButtons::OK, MessageBoxIcon::Information);
+		}
+		
 	}
 };
 }
