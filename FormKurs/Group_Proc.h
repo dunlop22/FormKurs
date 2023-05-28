@@ -2,6 +2,9 @@
 #include <vector>
 #include <string>
 #include "Read_channel_func.h"
+#include "Pipes.h"
+#include "Proccess.h"
+#include "Commands.h"
 namespace FormKurs {
 
 	using namespace System;
@@ -17,14 +20,13 @@ namespace FormKurs {
 	public ref class Group_Proc : public System::Windows::Forms::Form
 	{
 	public:
-		Group_Proc(Generic::List<String^>^ Channels, Generic::List<int>^ state)
+		Group_Proc(Generic::List<Pipes^>^ Pipes_)
 		{
 			InitializeComponent();
 			//
 			//TODO: добавьте код конструктора
 			//
-			Channels_old = Channels;
-			state_old = state;
+			Pipes_old = Pipes_;
 		}
 
 	protected:
@@ -475,12 +477,15 @@ namespace FormKurs {
 			this->PerformLayout();
 
 		}
-		array<String^, 3>^ action = gcnew array<String^, 3>(10, 10, 5);	//максимальное количество процессов - 10, максимальное колицество операций в процессе - 10
-		Generic::List<int>^ state_old;
-		Generic::List<String^>^ Channels_old = gcnew Generic::List<String^>();
+		//array<String^, 3>^ action = gcnew array<String^, 3>(10, 10, 5);	//максимальное количество процессов - 10, максимальное колицество операций в процессе - 10
+		Generic::List<Proccess^>^ Proccess_ = gcnew Generic::List<Proccess^>();
+		
+
+		Generic::List<Pipes^>^ Pipes_old;
 		Read_channel_func^ func_read;
 		int num_proc;
 		int num_action;
+		
 
 
 #pragma endregion
@@ -569,12 +574,15 @@ namespace FormKurs {
 		//обновление и добавление данных в таблицу
 		//заполнение таблицы значениями
 		
-		func_read->update_table(Channels_old, this->dataGridView_r);		//заполнение таблицы значениями
-		func_read->update_table(Channels_old, this->dataGridView_wr);		//заполнение таблицы значениями	
+		func_read->update_table(Pipes_old, this->dataGridView_r);		//заполнение таблицы значениями
+		func_read->update_table(Pipes_old, this->dataGridView_wr);		//заполнение таблицы значениями	
 	}
 
 	private: System::Void Group_Proc_Load(System::Object^ sender, System::EventArgs^ e) {
-		if (Channels_old->Count > 0)
+		Proccess^ proc_temp = gcnew Proccess();
+		Proccess_->Add(proc_temp);
+
+		if (Pipes_old->Count > 0)
 		{
 			func_read = gcnew Read_channel_func();
 			this->timer1->Interval = 500;		//установка времени для таймера
@@ -587,6 +595,7 @@ namespace FormKurs {
 			MessageBox::Show(L"Для межпроцессового взаимодействия необходимо создать канал хотя бы один канал.", L"Не найден ни один канал", MessageBoxButtons::OK, MessageBoxIcon::Information);
 			this->Close();
 		}
+		/*
 		for (int i = 0;i < 10;i++)
 		{
 			for (int j = 0;j < 10;j++)
@@ -594,6 +603,7 @@ namespace FormKurs {
 				action[i, j, 0] = "-5";		//обнуления массива
 			}
 		}
+		*/
 		this->label_num_proc->Text = "Процесс №" + num_proc;
 		this->label_num_action->Text = "Действие №" + num_action;
 	}
@@ -627,12 +637,9 @@ namespace FormKurs {
 		//чтение из канала
 		if (this->radioButton_r_ch->Checked == true)
 		{
-			action[num_proc - 1, num_action - 1, 0] = "0";	//номер действия (чтение)
-			action[num_proc - 1, num_action - 1, 1] = (this->dataGridView_r->CurrentRow->Index).ToString();	//канал для чтения
-			
 			if (this->textBox_num_zn->Text != "")		//проверка заполненности поля
 			{
-				action[num_proc - 1, num_action - 1, 2] = this->textBox_num_zn->Text;	//количество символов для чтения
+				Proccess_[num_proc - 1]->new_act_r(this->dataGridView_r->CurrentRow->Index, Convert::ToInt32(this->textBox_num_zn->Text));
 				this->textBox_buffer_act->Text = this->textBox_buffer_act->Text + "Процесс №" + num_proc + ". Действие №" + num_action;
 				this->textBox_buffer_act->Text = this->textBox_buffer_act->Text + "\r\nЧтение из канала № " + ((this->dataGridView_r->CurrentRow->Index).ToString() + 1) + ". " + this->textBox_num_zn->Text + " симв.\r\n\r\n";
 				return 0;		//good
@@ -642,19 +649,14 @@ namespace FormKurs {
 				MessageBox::Show(L"Введите количество символов для чтения из канала.", L"Предупреждение", MessageBoxButtons::OK, MessageBoxIcon::Information);
 				return 1;		//bad
 			}
-
-			
-			
 		}
 
 		//запись в канал
 		else if (this->radioButton_wr_ch->Checked == true)
 		{
-			action[num_proc - 1, num_action - 1, 0] = "1";	//номер действия (запись)
-			action[num_proc - 1, num_action - 1, 3] = (this->dataGridView_wr->CurrentRow->Index).ToString();	//канал для записи
 			if (this->textBox_wr_inf->Text != "")		//проверка заполненности поля
 			{
-				action[num_proc - 1, num_action - 1, 4] = this->textBox_wr_inf->Text;	//записываемые данные в канал
+				Proccess_[num_proc - 1]->new_act_w(this->dataGridView_wr->CurrentRow->Index, this->textBox_wr_inf->Text);
 				this->textBox_buffer_act->Text = this->textBox_buffer_act->Text + "Процесс №" + num_proc + ". Действие №" + num_action;
 				this->textBox_buffer_act->Text = this->textBox_buffer_act->Text + "\r\nЗапись в канал № " + ((this->dataGridView_wr->CurrentRow->Index).ToString() + 1) + ".\r\nДанные в канал: " + this->textBox_wr_inf->Text; + "\r\n\r\n";
 				return 0;	//good
@@ -669,14 +671,11 @@ namespace FormKurs {
 		//перезапись из канала в канал
 		else if (this->radioButton_r_to_wr_ch->Checked == true)
 		{
-			action[num_proc - 1, num_action - 1, 0] = "2";	//номер действия (перезапись в другой канал)
-			action[num_proc - 1, num_action - 1, 1] = (this->dataGridView_r->CurrentRow->Index).ToString();	//канал для чтения
 			if (this->textBox_num_zn->Text != "")		//проверка заполненности поля
 			{
-				action[num_proc - 1, num_action - 1, 2] = this->textBox_num_zn->Text;	//количество символов для чтения
+				Proccess_[num_proc - 1]->new_act_rw(this->dataGridView_r->CurrentRow->Index, Convert::ToInt32(this->textBox_num_zn->Text), this->dataGridView_wr->CurrentRow->Index);
 				this->textBox_buffer_act->Text = this->textBox_buffer_act->Text + "Процесс №" + num_proc + ". Действие №" + num_action;
 				this->textBox_buffer_act->Text = this->textBox_buffer_act->Text + "\r\nПерезапись из канала " + ((this->dataGridView_r->CurrentRow->Index).ToString() + 1) + "в канал №" + (this->dataGridView_wr->CurrentRow->Index).ToString() + ". " + this->textBox_num_zn->Text + " симв.\r\n\r\n";
-				action[num_proc - 1, num_action - 1, 3] = (this->dataGridView_wr->CurrentRow->Index).ToString();	//канал для записи
 				return 0;		//good;
 			}
 			else
@@ -684,11 +683,7 @@ namespace FormKurs {
 				MessageBox::Show(L"Введите количество символов для чтения из канала.", L"Предупреждение", MessageBoxButtons::OK, MessageBoxIcon::Information);
 				return 3;		//bad;
 			}
-			
-			
 		}
-
-		
 	}
 
 	private: System::Void button_new_proc_Click(System::Object^ sender, System::EventArgs^ e) {
@@ -727,9 +722,12 @@ namespace FormKurs {
 				MessageBox::Show(L"Создано максимальное количество процессов.", L"Предупреждение", MessageBoxButtons::OK, MessageBoxIcon::Information);
 			}
 		}
+		Proccess^ Proccess_temp = gcnew Proccess();
+		Proccess_->Add(Proccess_temp);	//добавление нового процесса
 	}
 	
 	private: System::Void button_new_action_Click(System::Object^ sender, System::EventArgs^ e) {
+		
 		if (!(this->radioButton_r_ch->Checked == false && this->radioButton_wr_ch->Checked == false && this->radioButton_r_to_wr_ch->Checked == false))
 		{
 			if (num_action <= 10)
@@ -737,6 +735,7 @@ namespace FormKurs {
 				//сохранение всех введенных данных через функцию
 				if (save_command() == 0)		//запись информации о текущем этапе
 				{
+					//перевести на количество ACTIONS в PROCCESS (COUNT)
 					clear_all_field();	//очистка всех полей
 					if (num_action < 10)
 					{
@@ -755,7 +754,125 @@ namespace FormKurs {
 
 	void interprocess_interaction()
 	{
+		//скрытие всех элементов управления
+		this->groupBox_change->Visible = false;
+		this->groupBox_mode->Visible = false;
+		this->groupBox_r_ch->Visible = false;
+		this->groupBox_w_ch->Visible = false;
+		this->textBox_rez_log->Visible = true;
 
+		Commands^ Command = gcnew Commands();
+		int num_krug = 0;
+		bool rez = true;
+		int num_act = 1;	//порядковый номер действия
+		int good;	//подсчет завершившихся процессов
+		do
+		{
+			good = 0;
+			for (int i = 0;i < Proccess_->Count;i++)		//проход по всем процессам
+			{
+				//разблокировка канала с прошлого этапа
+				if (num_krug != 0)
+				{
+					if (Proccess_[i]->get_num_actions() > 0)
+					{
+						if (Proccess_[i]->get_actions()->get_num_actions() == 0 && Proccess_[i]->get_actions()->get_rez_done())	//освобождение канала после чтения
+						{
+							if (Pipes_old[Proccess_[i]->get_actions()->get_num_pipes_read()]->check_block())
+							{
+								Pipes_old[Proccess_[i]->get_actions()->get_num_pipes_read()]->pclose();		//разблокировка канала после чтения
+							}
+						}
+						else if (Proccess_[i]->get_actions()->get_num_actions() == 1 && Proccess_[i]->get_actions()->get_rez_done())
+						{
+							if (Pipes_old[Proccess_[i]->get_actions()->get_num_pipes_write()]->check_block())
+							{
+								Pipes_old[Proccess_[i]->get_actions()->get_num_pipes_write()]->pclose();		//разблокировка канала после записи
+							}
+						}
+						else if (Proccess_[i]->get_actions()->get_num_actions() == 2 && Proccess_[i]->get_actions()->get_rez_done())
+						{
+							if (Pipes_old[Proccess_[i]->get_actions()->get_num_pipes_read()]->check_block())
+							{
+								Pipes_old[Proccess_[i]->get_actions()->get_num_pipes_read()]->pclose();		//разблокировка канала после чтения
+							}
+							if (Pipes_old[Proccess_[i]->get_actions()->get_num_pipes_write()]->check_block())
+							{
+								Pipes_old[Proccess_[i]->get_actions()->get_num_pipes_write()]->pclose();		//разблокировка канала после записи
+							}
+						}
+						if (Proccess_[i]->get_actions()->get_rez_done())
+						{
+							Proccess_[i]->del_act();		//удаление предыдущего действия }
+						}
+					}
+
+					
+				}
+				if (Proccess_[i]->get_num_actions() > 0)
+				{
+					this->textBox_rez_log->Text = this->textBox_rez_log->Text + "Действие №" + num_act + "\r\nПроцесс №" + (i + 1) + "\r\n";
+
+					if (Proccess_[i]->get_num_action() == 0)
+					{
+						Command->Read_Commands(Proccess_[i]->get_actions(), Pipes_old, this->textBox_rez_log, 0);	//0- указывает на чистое чтение
+					}
+					else if (Proccess_[i]->get_num_action() == 1)
+					{
+						Command->Write_Commands(Proccess_[i]->get_actions(), Pipes_old, this->textBox_rez_log, 0);
+					}
+					
+					else if (Proccess_[i]->get_num_action() == 2)
+					{
+						if ((Proccess_[i]->get_actions()->get_text()) == "")
+						{
+							Command->Read_Commands(Proccess_[i]->get_actions(), Pipes_old, this->textBox_rez_log, 1);
+						}
+						else
+						{
+							Command->Write_Commands(Proccess_[i]->get_actions(), Pipes_old, this->textBox_rez_log, 1);
+						}
+
+
+						//объединить команды чтения и записи??
+					}
+					
+					num_act = num_act + 1;
+				}
+				if (Proccess_[i]->get_num_actions() == 0)
+				{
+					good = good + 1;
+				}
+			}
+			num_krug = num_krug + 1;
+		} while (good != Proccess_->Count);
+
+
+		//освобождение конечных каналов
+		
+		for (int i = 0;i < Pipes_old->Count;i++)
+		{
+			if (Proccess_[i]->get_num_actions() > 0)
+			{
+				if (Proccess_[i]->get_actions()->get_num_actions() == 0 && Proccess_[i]->get_actions()->get_rez_done())	//освобождение канала после чтения
+				{
+					if (Pipes_old[Proccess_[i]->get_actions()->get_num_pipes_read()]->check_block())
+					{
+						Pipes_old[Proccess_[i]->get_actions()->get_num_pipes_read()]->pclose();		//разблокировка канала
+					}
+				}
+				else if (Proccess_[i]->get_actions()->get_num_actions() == 1 && Proccess_[i]->get_actions()->get_rez_done())
+				{
+					if (Pipes_old[Proccess_[i]->get_actions()->get_num_pipes_write()]->check_block())
+					{
+						Pipes_old[Proccess_[i]->get_actions()->get_num_pipes_write()]->pclose();		//разблокировка канала
+					}
+				}
+			}
+		}
+		
+
+		/*
 		int sum_act = 0;		//общее количество действий, которое необходимо совершить
 		for (int i = 0;i < num_proc;i++)
 		{
@@ -771,16 +888,9 @@ namespace FormKurs {
 				}
 			}
 		}
+		*/
+		/*
 
-		//скрытие всех элементов управления
-		this->groupBox_change->Visible = false;
-		this->groupBox_mode->Visible = false;
-		this->groupBox_r_ch->Visible = false;
-		this->groupBox_w_ch->Visible = false;
-
-
-		//this->textBox_rez_log->BackColor = Color::Gray;
-		this->textBox_rez_log->Visible = true;		
 		array<int>^ block_kanal = gcnew array<int>(Channels_old->Count);		//флажок блокировки канала
 		array<String^>^ temp_string_ch = gcnew array<String^>(num_proc);		//строки для перезаписи из одного канала в другой (кол-во строк = кол-во прцессов)
 
@@ -800,16 +910,11 @@ namespace FormKurs {
 				//разблокировка каналов
 
 				if (action[i, temp_act[i, 0], 0] != "2")
-				//if (temp_act[i, 1] != 1)		//при процессе перезаписи канал не разблокируется
 				{
 					if (temp_act[i, 0] > 0)
 					{
 						block_kanal[Convert::ToInt32(action[i, (temp_act[i, 0] - 1), 1])] = 0;
 						block_kanal[Convert::ToInt32(action[i, (temp_act[i, 0] - 1), 3])] = 0;
-						/*
-						block_kanal[Convert::ToInt32(action[i, temp_act[i, 0], 1])] = 0;	//разблокировка канала после чтения
-						block_kanal[Convert::ToInt32(action[i, temp_act[i, 0], 3])] = 0;	//разблокировка канала после записи
-						*/
 					}
 				}
 				if (action[i, temp_act[i, 0], 0] == "2")
@@ -919,7 +1024,7 @@ namespace FormKurs {
 								}
 								temp_string_ch[i] = Channels_old[Convert::ToInt32(action[i, temp_act[i, 0], 1])];
 								temp_string_ch[i] = temp_string_ch[i]->Substring(0, lenght_read);
-								this->textBox_rez_log->Text = this->textBox_rez_log->Text + "Чтение из канала №: " + (Convert::ToInt32(action[i, temp_act[i, 0], 1]) + 1) + " - Успешно";
+								this->textBox_rez_log->Text = this->textBox_rez_log->Text + "Чтение (процесс переписи) из канала №: " + (Convert::ToInt32(action[i, temp_act[i, 0], 1]) + 1) + " - Успешно";
 								this->textBox_rez_log->Text = this->textBox_rez_log->Text + "\r\nДанные из канала: " + temp_string_ch[i] + "\r\nДанные записаны в буфер";	//вывод начитанного
 								//обрезка канала  (того, что прочитано из канала в поле textbox)
 								Channels_old[Convert::ToInt32(action[i, temp_act[i, 0], 1])] = Channels_old[Convert::ToInt32(action[i, temp_act[i, 0], 1])]->Substring(lenght_read, Channels_old[Convert::ToInt32(action[i, temp_act[i, 0], 1])]->Length - lenght_read);
@@ -930,7 +1035,7 @@ namespace FormKurs {
 							}
 							else
 							{
-								this->textBox_rez_log->Text = this->textBox_rez_log->Text + "Чтение из канала №: " + (Convert::ToInt32(action[i, temp_act[i, 0], 1]) + 1) + " - Неудачно, канал заблокирован.";
+								this->textBox_rez_log->Text = this->textBox_rez_log->Text + "Чтение (процесс переписи) из канала №: " + (Convert::ToInt32(action[i, temp_act[i, 0], 1]) + 1) + " - Неудачно, канал заблокирован.";
 							}
 						}
 						else        //процесс записи в канал
@@ -938,7 +1043,7 @@ namespace FormKurs {
 							//запись информации в канал
 							
 							block_kanal[Convert::ToInt32(action[i, temp_act[i, 0], 3])] = 1;		//блокировка канала	//смена блокировки
-							this->textBox_rez_log->Text = this->textBox_rez_log->Text + "Запись в канал №: " + (Convert::ToInt32(action[i, temp_act[i, 0], 3]) + 1) + " - Успешно";
+							this->textBox_rez_log->Text = this->textBox_rez_log->Text + "Запись (процесс переписи) в канал №: " + (Convert::ToInt32(action[i, temp_act[i, 0], 3]) + 1) + " - Успешно";
 							this->textBox_rez_log->Text = this->textBox_rez_log->Text + "\r\nНовые данные в канале: " + temp_string_ch[i];
 							Channels_old[Convert::ToInt32(action[i, temp_act[i, 0], 3])] = Channels_old[Convert::ToInt32(action[i, temp_act[i, 0], 3])] + temp_string_ch[i];		//заполнение канала новыми данными
 							this->textBox_rez_log->Text = this->textBox_rez_log->Text + "\r\nКанал после операции: " + Channels_old[Convert::ToInt32(action[i, temp_act[i, 0], 3])];
@@ -948,18 +1053,10 @@ namespace FormKurs {
 						}
 					}
 				}
-				/*
-				if (action[i, temp_act[i, 0], 0] == "-5" && (action[i, (temp_act[i, 0] - 1), 0] == "0" || action[i, (temp_act[i, 0] - 1), 0] == "1" || action[i, (temp_act[i, 0] - 1), 0] == "2"))
-				{
-					temp_act[i, 0] = temp_act[i, 0] + 1;
-					this->textBox_rez_log->Text = this->textBox_rez_log->Text + "\r\nРабота процесса №" + (i + 1) + " завершена";
-				}
-				*/
-
 			}
 			//проверка всех пройденных маршрутов (каналов / процессов)
 		} while (sum_act_ok < sum_act);
-
+		*/
 		this->textBox_rez_log->Text = this->textBox_rez_log->Text + "\r\n\r\n\r\nВсе операции окончены!";
 		//операция на чтение выполняется незаблокированный канал
 		//операции на запись требуют незаблокированный канал

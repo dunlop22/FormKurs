@@ -1,5 +1,6 @@
 #pragma once
 #include "Read_channel_func.h"
+#include "Pipes.h"
 namespace FormKurs {
 
 	using namespace System;
@@ -16,13 +17,14 @@ namespace FormKurs {
 	public ref class ReadChannel : public System::Windows::Forms::Form
 	{
 	public:
-		ReadChannel(Generic::List<String^>^ Channels)
+		
+		ReadChannel(Generic::List<Pipes^>^ Pipes_)
 		{
 			InitializeComponent();
 			//
 			//TODO: добавьте код конструктора
 			//
-			Channels_old = Channels;
+			Pipes_old = Pipes_;
 		}
 	
 
@@ -189,7 +191,8 @@ namespace FormKurs {
 
 		}
 	private:
-		Generic::List<String^>^ Channels_old;
+		Generic::List<Pipes^>^ Pipes_old;
+		//Generic::List<String^>^ Channels_old;
 		int num_simbol;		//количество символов для чтения
 		int krug = 0;
 		String^ str_channel;
@@ -198,7 +201,7 @@ namespace FormKurs {
 
 #pragma endregion
 	private: System::Void ReadChannel_Load(System::Object^ sender, System::EventArgs^ e) {
-		if (Channels_old->Count > 0)
+		if (Pipes_old->Count > 0)
 		{
 			this->timer2->Interval = 500;		//установка времени для таймера
 			this->timer2->Enabled = true;		//включение таймера
@@ -228,11 +231,11 @@ namespace FormKurs {
 
 	   //таймер обновления данных в таблице
 	private: System::Void timer2_Tick(System::Object^ sender, System::EventArgs^ e) {
-		func_read->update_table(Channels_old, this->dataGridView1);		//заполнение таблицы значениями
+		func_read->update_table(Pipes_old, this->dataGridView1);		//заполнение таблицы значениями
 	}
 
 private: System::Void button_start_read_Click(System::Object^ sender, System::EventArgs^ e) {
-	if (Channels_old->Count > 0)
+	if (Pipes_old->Count > 0)
 	{
 		if (this->textBox_num_simbol->Text != "")		//проверка на заполненность поля ввода объема потока чтения
 		{
@@ -245,7 +248,7 @@ private: System::Void button_start_read_Click(System::Object^ sender, System::Ev
 
 			this->label_channel->Visible = true;	//показ верхнего поля информации
 
-			str_channel = Channels_old[num_channel];
+			str_channel = Pipes_old[num_channel]->p_read();		//значение канала
 
 			if (Convert::ToInt32(this->textBox_num_simbol->Text) >= str_channel->Length)
 			{
@@ -258,7 +261,8 @@ private: System::Void button_start_read_Click(System::Object^ sender, System::Ev
 			}
 
 			//обрезка канала
-			Channels_old[num_channel] = Channels_old[num_channel]->Substring(num_simbol, str_channel->Length - num_simbol);
+			Pipes_old[num_channel]->p_write(Pipes_old[num_channel]->p_read()->Substring(num_simbol, str_channel->Length - num_simbol));
+			//Pipes_old[num_channel] = Pipes_old[num_channel]->Substring(num_simbol, str_channel->Length - num_simbol);
 
 			this->label_information->Text = "Номер канала: " + (num_channel + 1).ToString() + "\nКоличество символов для чтения: " + num_simbol + "\n\nЧтение выбранного канала";
 			//вывод информации из канала

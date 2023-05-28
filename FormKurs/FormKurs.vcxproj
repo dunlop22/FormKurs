@@ -122,14 +122,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Actions.cpp" />
+    <ClCompile Include="Commands.cpp" />
     <ClCompile Include="Group_Proc.cpp" />
     <ClCompile Include="MainForm.cpp" />
     <ClCompile Include="NewChannel.cpp" />
+    <ClCompile Include="Pipes.cpp" />
+    <ClCompile Include="Proccess.cpp" />
     <ClCompile Include="ReadChannel.cpp" />
     <ClCompile Include="Read_channel_func.cpp" />
     <ClCompile Include="WriteChannel.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Actions.h" />
+    <ClInclude Include="Commands.h" />
     <ClInclude Include="Group_Proc.h">
       <FileType>CppForm</FileType>
     </ClInclude>
@@ -139,6 +145,8 @@
     <ClInclude Include="NewChannel.h">
       <FileType>CppForm</FileType>
     </ClInclude>
+    <ClInclude Include="Pipes.h" />
+    <ClInclude Include="Proccess.h" />
     <ClInclude Include="ReadChannel.h">
       <FileType>CppForm</FileType>
     </ClInclude>

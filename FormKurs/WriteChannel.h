@@ -1,5 +1,6 @@
 #pragma once
 #include "Read_channel_func.h"
+#include "Pipes.h"
 //#include <msclr/marshal_cppstd.h>
 namespace FormKurs {
 
@@ -16,38 +17,24 @@ namespace FormKurs {
 	public ref class WriteChannel : public System::Windows::Forms::Form
 	{
 	public:
-		WriteChannel(Generic::List<String^>^ Channels, Generic::List<int>^ state)
-		//WriteChannel(MainForm^ f_Main)
+		WriteChannel(Generic::List<Pipes^>^ Pipes_)
 		{
 			InitializeComponent();
 			//
 			//TODO: добавьте код конструктора
 			//
-			//F_main = f_Main;
-			//Generic::List<String^>^ Channels_old = f_Main->Channels;
-			Channels_old = Channels;
-			state_old = state;
+			Pipes_old = Pipes_;
 		}
 	private: System::Windows::Forms::Button^ button_edit_channel;
 	private: System::Windows::Forms::TextBox^ textBox_channel;
 	private: System::Windows::Forms::Button^ button_save;
-	public:
-		//Generic::List<String^>^ Channels_old = gcnew Generic::List<String^>();
-		Generic::List<String^>^ Channels_old = gcnew Generic::List<String^>();
+	
 	private: System::Windows::Forms::Timer^ timer1;
 	private: System::Windows::Forms::Label^ label_new_info_for_channel;
-
 	private: System::Windows::Forms::Label^ label_current_info;
-
 	private: System::Windows::Forms::Label^ current_info_in_channel;
-
 	private: System::Windows::Forms::Button^ button_save_exit;
 	public:
-
-	public:
-	public:
-		
-
 		//MainForm^ F_main;
 	protected:
 		/// <summary>
@@ -104,7 +91,7 @@ namespace FormKurs {
 				this->NumberChannel,
 					this->DataChannel
 			});
-			this->dataGridView1->Location = System::Drawing::Point(199, 43);
+			this->dataGridView1->Location = System::Drawing::Point(245, 70);
 			this->dataGridView1->Name = L"dataGridView1";
 			this->dataGridView1->ReadOnly = true;
 			this->dataGridView1->Size = System::Drawing::Size(463, 221);
@@ -132,13 +119,13 @@ namespace FormKurs {
 			this->label_information->Name = L"label_information";
 			this->label_information->Size = System::Drawing::Size(1040, 67);
 			this->label_information->TabIndex = 1;
-			this->label_information->Text = L"Выберите канал для редактирования двойным щелчком мыши";
+			this->label_information->Text = L"Выберите канал для редактирования";
 			this->label_information->TextAlign = System::Drawing::ContentAlignment::MiddleCenter;
 			// 
 			// button_edit_channel
 			// 
 			this->button_edit_channel->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12));
-			this->button_edit_channel->Location = System::Drawing::Point(369, 506);
+			this->button_edit_channel->Location = System::Drawing::Point(421, 502);
 			this->button_edit_channel->Name = L"button_edit_channel";
 			this->button_edit_channel->Size = System::Drawing::Size(135, 47);
 			this->button_edit_channel->TabIndex = 2;
@@ -148,7 +135,7 @@ namespace FormKurs {
 			// 
 			// textBox_channel
 			// 
-			this->textBox_channel->Location = System::Drawing::Point(193, 444);
+			this->textBox_channel->Location = System::Drawing::Point(245, 440);
 			this->textBox_channel->Name = L"textBox_channel";
 			this->textBox_channel->Size = System::Drawing::Size(469, 20);
 			this->textBox_channel->TabIndex = 3;
@@ -157,7 +144,7 @@ namespace FormKurs {
 			// button_save
 			// 
 			this->button_save->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12));
-			this->button_save->Location = System::Drawing::Point(369, 559);
+			this->button_save->Location = System::Drawing::Point(421, 555);
 			this->button_save->Name = L"button_save";
 			this->button_save->Size = System::Drawing::Size(135, 43);
 			this->button_save->TabIndex = 4;
@@ -173,7 +160,7 @@ namespace FormKurs {
 			// button_save_exit
 			// 
 			this->button_save_exit->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12));
-			this->button_save_exit->Location = System::Drawing::Point(369, 620);
+			this->button_save_exit->Location = System::Drawing::Point(421, 616);
 			this->button_save_exit->Name = L"button_save_exit";
 			this->button_save_exit->Size = System::Drawing::Size(135, 43);
 			this->button_save_exit->TabIndex = 5;
@@ -186,7 +173,7 @@ namespace FormKurs {
 			// 
 			this->label_new_info_for_channel->AutoSize = true;
 			this->label_new_info_for_channel->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12));
-			this->label_new_info_for_channel->Location = System::Drawing::Point(220, 411);
+			this->label_new_info_for_channel->Location = System::Drawing::Point(272, 407);
 			this->label_new_info_for_channel->Name = L"label_new_info_for_channel";
 			this->label_new_info_for_channel->Size = System::Drawing::Size(416, 20);
 			this->label_new_info_for_channel->TabIndex = 6;
@@ -197,7 +184,7 @@ namespace FormKurs {
 			// 
 			this->label_current_info->AutoSize = true;
 			this->label_current_info->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12));
-			this->label_current_info->Location = System::Drawing::Point(327, 284);
+			this->label_current_info->Location = System::Drawing::Point(327, 304);
 			this->label_current_info->Name = L"label_current_info";
 			this->label_current_info->Size = System::Drawing::Size(250, 20);
 			this->label_current_info->TabIndex = 7;
@@ -208,7 +195,7 @@ namespace FormKurs {
 			// 
 			this->current_info_in_channel->AutoSize = true;
 			this->current_info_in_channel->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12));
-			this->current_info_in_channel->Location = System::Drawing::Point(193, 351);
+			this->current_info_in_channel->Location = System::Drawing::Point(327, 340);
 			this->current_info_in_channel->Name = L"current_info_in_channel";
 			this->current_info_in_channel->Size = System::Drawing::Size(51, 20);
 			this->current_info_in_channel->TabIndex = 8;
@@ -239,13 +226,13 @@ namespace FormKurs {
 		}
 #pragma endregion
 	private:
+		Generic::List<Pipes^>^ Pipes_old;
 		int num_channel;					//номер выбранного канала из списка
-		Generic::List<int>^ state_old;		//состояние канала (есть ли параллельная запись в канал)
 		Read_channel_func^ func_read;		//заполнение таблицы по таймеру
 	private: System::Void WriteChannel_Load(System::Object^ sender, System::EventArgs^ e) {
 		func_read = gcnew Read_channel_func();
 
-		if (Channels_old->Count > 0)		//если есть хоть один канал, то вывести информацию о нем в таблицу (запустить таймер)
+		if (Pipes_old->Count > 0)		//если есть хоть один канал, то вывести информацию о нем в таблицу (запустить таймер)
 		{
 			this->timer1->Interval = 500;		//установка времени для таймера
 			this->timer1->Enabled = true;		//включение таймера
@@ -260,7 +247,7 @@ namespace FormKurs {
 
 	}
 	private: System::Void button_edit_channel_Click(System::Object^ sender, System::EventArgs^ e) {
-		if (state_old[dataGridView1->CurrentRow->Index] != 1)
+		if (Pipes_old[dataGridView1->CurrentRow->Index]->popen())
 		{
 			this->dataGridView1->Visible = false;
 			this->button_edit_channel->Visible = false;
@@ -274,22 +261,25 @@ namespace FormKurs {
 			this->label_information->Visible = true;
 
 			num_channel = dataGridView1->CurrentRow->Index;		//узнать номер выбранного канала (0, 1, 2, ...)
-			this->state_old[num_channel] = 1;
-			this->textBox_channel->Text = Channels_old[num_channel];
+			this->label_current_info->Text = Pipes_old[dataGridView1->CurrentRow->Index]->p_read();
+//			this->textBox_channel->Text = Pipes_old[dataGridView1->CurrentRow->Index]->p_read();
 		}
 	}
 
 	private: System::Void button_save_Click(System::Object^ sender, System::EventArgs^ e) {
-		Channels_old[num_channel] = this->textBox_channel->Text;
+		Pipes_old[num_channel]->p_write(Pipes_old[dataGridView1->CurrentRow->Index]->p_read() + textBox_channel->Text);
+		this->label_current_info->Text = Pipes_old[dataGridView1->CurrentRow->Index]->p_read();
+		this->textBox_channel->Text = "";
 	}
 
 		   //таймер обновления данных каналов
 private: System::Void timer1_Tick(System::Object^ sender, System::EventArgs^ e) {
 	//заполнение таблицы значениями
-	func_read->update_table(Channels_old, this->dataGridView1);		//заполнение таблицы значениями
-	for (int i = 0;i < Channels_old->Count;i++)
+	func_read->update_table(Pipes_old, this->dataGridView1);		//заполнение таблицы значениями
+	for (int i = 0;i < Pipes_old->Count;i++)
 	{
-		if (state_old[i] == 1)
+		
+		if (Pipes_old[i]->check_block())
 		{
 			this->dataGridView1->Rows[i]->DefaultCellStyle->BackColor = Color::Red;
 		}
@@ -301,8 +291,8 @@ private: System::Void timer1_Tick(System::Object^ sender, System::EventArgs^ e) 
 }
 
 private: System::Void button_save_exit_Click(System::Object^ sender, System::EventArgs^ e) {
-	Channels_old[num_channel] = this->textBox_channel->Text;
-	this->state_old[num_channel] = 0;
+	Pipes_old[num_channel]->p_write(Pipes_old[dataGridView1->CurrentRow->Index]->p_read() + textBox_channel->Text);
+	Pipes_old[num_channel]->pclose();	//освобождение канала
 	this->Close();
 }
 };

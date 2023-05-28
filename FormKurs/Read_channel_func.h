@@ -1,4 +1,5 @@
 #pragma once
+#include "Pipes.h"
 using namespace System;
 using namespace System::ComponentModel;
 using namespace System::Collections;
@@ -10,8 +11,6 @@ using namespace System::Threading;
 ref class Read_channel_func
 {
 public:
-	void update_table(Generic::List<String^>^ channel, DataGridView^ data_table);
-
-	void read_from_channel(Generic::List<String^>^ channel, int index, int dlina_read);
+	void update_table(Generic::List<Pipes^>^ Pipes_, DataGridView^ data_table);
 };
 

@@ -4,6 +4,7 @@
 #include "WriteChannel.h"
 #include "Group_Proc.h"
 #include <string>
+#include "Pipes.h"
 
 namespace FormKurs {
 
@@ -190,37 +191,53 @@ namespace FormKurs {
 		Generic::List<String^>^ Channels = gcnew Generic::List<String^>();
 		Generic::List<int>^ state = gcnew Generic::List<int>();
 		String^ temp_inf;
-
+		Generic::List<Pipes^>^ Pipes_ = gcnew Generic::List<Pipes^>();
+		int num_pipe = 0;
 #pragma endregion
 	private: System::Void button_new_channel_Click(System::Object^ sender, System::EventArgs^ e) {
+
 		NewChannel^ f_nc = gcnew NewChannel();
 		f_nc->ShowDialog();
-		temp_inf = f_nc->textBox1->Text;
+		temp_inf = f_nc->textBox1->Text;		//содрежимое канала для записи
+		Pipes^ pipe_temp = gcnew Pipes(num_pipe);
 		if (f_nc->rez == true)
 		{
+			
+
+
 			//обработка только по нажатию кнопки SAVE
-			Channels->Add(temp_inf);		//помещение новых данных в "Коллекцию"
-			state->Add(0);
+			//Channels->Add(temp_inf);		//помещение новых данных в "Коллекцию"
+			//state->Add(0);
+			if (!(pipe_temp->check_block()))
+			{
+				pipe_temp->p_write(temp_inf);
+			}
+			else
+			{
+				MessageBox::Show(L"Запись в канал невозможна.", L"Предупреждение", MessageBoxButtons::OK, MessageBoxIcon::Information);
+			}
 		}
+		num_pipe = num_pipe + 1;
+		Pipes_->Add(pipe_temp);
 	}
 
 		//чтение из канала
 	private: System::Void button_read_channel_Click(System::Object^ sender, System::EventArgs^ e) {
-		ReadChannel^ f_rc = gcnew ReadChannel(Channels);
+		ReadChannel^ f_rc = gcnew ReadChannel(Pipes_);
 		f_rc->Show();
 
 	}
 
 	    //создание нового канала
 	private: System::Void button_write_channel_Click(System::Object^ sender, System::EventArgs^ e) {
-		WriteChannel^ f_wc = gcnew WriteChannel(this->Channels, this->state);
+		WriteChannel^ f_wc = gcnew WriteChannel(Pipes_);
 		f_wc->Show();
 	}
 
 
 	   //создание группы процессов
 	private: System::Void button_create_group_proc_Click(System::Object^ sender, System::EventArgs^ e) {
-		Group_Proc^ f_gp = gcnew Group_Proc(this->Channels, this->state);
+		Group_Proc^ f_gp = gcnew Group_Proc(Pipes_);
 		f_gp->ShowDialog();
 	}
 };
