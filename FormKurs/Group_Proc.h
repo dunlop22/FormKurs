@@ -480,7 +480,7 @@ namespace FormKurs {
 		//array<String^, 3>^ action = gcnew array<String^, 3>(10, 10, 5);	//максимальное количество процессов - 10, максимальное колицество операций в процессе - 10
 		Generic::List<Proccess^>^ Proccess_ = gcnew Generic::List<Proccess^>();
 		
-
+		Proccess^ Proccess_temp = gcnew Proccess();
 		Generic::List<Pipes^>^ Pipes_old;
 		Read_channel_func^ func_read;
 		int num_proc;
@@ -572,8 +572,6 @@ namespace FormKurs {
 	}
 
 	private: System::Void Group_Proc_Load(System::Object^ sender, System::EventArgs^ e) {
-		Proccess^ proc_temp = gcnew Proccess();
-		Proccess_->Add(proc_temp);
 
 		if (Pipes_old->Count > 0)
 		{
@@ -622,7 +620,7 @@ namespace FormKurs {
 		{
 			if (this->textBox_num_zn->Text != "")		//проверка заполненности поля
 			{
-				Proccess_[num_proc - 1]->new_act_r(this->dataGridView_r->CurrentRow->Index, Convert::ToInt32(this->textBox_num_zn->Text));
+				Proccess_temp->new_act_r(this->dataGridView_r->CurrentRow->Index, Convert::ToInt32(this->textBox_num_zn->Text));
 				this->textBox_buffer_act->Text = this->textBox_buffer_act->Text + "Процесс №" + num_proc + ". Действие №" + num_action;
 				this->textBox_buffer_act->Text = this->textBox_buffer_act->Text + "\r\nЧтение из канала № " + (this->dataGridView_r->CurrentRow->Index + 1) + ". " + this->textBox_num_zn->Text + " симв.\r\n\r\n";
 				return 0;		//good
@@ -639,7 +637,7 @@ namespace FormKurs {
 		{
 			if (this->textBox_wr_inf->Text != "")		//проверка заполненности поля
 			{
-				Proccess_[num_proc - 1]->new_act_w(this->dataGridView_wr->CurrentRow->Index, this->textBox_wr_inf->Text);
+				Proccess_temp->new_act_w(this->dataGridView_wr->CurrentRow->Index, this->textBox_wr_inf->Text);
 				this->textBox_buffer_act->Text = this->textBox_buffer_act->Text + "Процесс №" + num_proc + ". Действие №" + num_action;
 				this->textBox_buffer_act->Text = this->textBox_buffer_act->Text + "\r\nЗапись в канал № " + (this->dataGridView_wr->CurrentRow->Index + 1) + ".\r\nДанные в канал: " + this->textBox_wr_inf->Text + "	\r\n\r\n";
 				return 0;	//good
@@ -656,7 +654,7 @@ namespace FormKurs {
 		{
 			if (this->textBox_num_zn->Text != "")		//проверка заполненности поля
 			{
-				Proccess_[num_proc - 1]->new_act_rw(this->dataGridView_r->CurrentRow->Index, Convert::ToInt32(this->textBox_num_zn->Text), this->dataGridView_wr->CurrentRow->Index);
+				Proccess_temp->new_act_rw(this->dataGridView_r->CurrentRow->Index, Convert::ToInt32(this->textBox_num_zn->Text), this->dataGridView_wr->CurrentRow->Index);
 				this->textBox_buffer_act->Text = this->textBox_buffer_act->Text + "Процесс №" + num_proc + ". Действие №" + num_action;
 				this->textBox_buffer_act->Text = this->textBox_buffer_act->Text + "\r\nПерезапись из канала " + (this->dataGridView_r->CurrentRow->Index + 1) + "в канал №" + (this->dataGridView_wr->CurrentRow->Index + 1) + ". " + this->textBox_num_zn->Text + " симв.\r\n\r\n";
 				return 0;		//good;
@@ -678,6 +676,7 @@ namespace FormKurs {
 				num_action = 1;
 				this->label_num_proc->Text = "Процесс №" + num_proc;
 				this->label_num_action->Text = "Действие №" + num_action;
+				
 			}
 			else
 			{
@@ -695,14 +694,16 @@ namespace FormKurs {
 				num_action = 1;
 				this->label_num_proc->Text = "Процесс №" + num_proc;
 				this->label_num_action->Text = "Действие №" + num_action;
+				Proccess_->Add(Proccess_temp);	//добавление нового процесса
+				Proccess_temp = gcnew Proccess();
 			}
 			else
 			{
 				MessageBox::Show(L"Создано максимальное количество процессов.", L"Предупреждение", MessageBoxButtons::OK, MessageBoxIcon::Information);
 			}
 		}
-		Proccess^ Proccess_temp = gcnew Proccess();
-		Proccess_->Add(Proccess_temp);	//добавление нового процесса
+		
+		
 	}
 	
 	private: System::Void button_new_action_Click(System::Object^ sender, System::EventArgs^ e) {
@@ -851,6 +852,12 @@ namespace FormKurs {
 		this->label_num_action->Visible = false;
 		this->label_num_proc->Visible = false;
 		this->groupBox_buffer_act->Visible = false;
+
+		if (Proccess_temp->get_num_actions() != 0)
+		{
+			Proccess_->Add(Proccess_temp);	//добавление нового процесса
+		}
+			
 		interprocess_interaction();
 	}
 };
